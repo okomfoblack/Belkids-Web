@@ -1,0 +1,472 @@
+/* ==========================================
+   BELKIDS ADMIN DASHBOARD
+   ========================================== */
+
+:root{
+    --bg-primary:#0f172a;
+    --bg-secondary:#111827;
+    --bg-tertiary:#1e293b;
+
+    --accent:#ff7739;
+    --accent-light:#ff9b6b;
+
+    --gold:#fbbf24;
+    --gold-light:#fde68a;
+
+    --white:#ffffff;
+    --gray:#d1d5db;
+    --muted:#9ca3af;
+
+    --glass:rgba(255,255,255,.05);
+    --border:rgba(255,255,255,.08);
+
+    --success:#10b981;
+    --danger:#ef4444;
+    --warning:#f59e0b;
+
+    --radius:24px;
+    --transition:.35s ease;
+}
+
+/* RESET */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    background:
+    linear-gradient(
+        135deg,
+        var(--bg-primary),
+        var(--bg-secondary),
+        var(--bg-tertiary)
+    );
+
+    color:var(--white);
+}
+
+/* MAIN */
+
+.admin-dashboard{
+    min-height:100vh;
+    padding:40px;
+}
+
+/* HEADER */
+
+.admin-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:40px;
+
+    padding:35px;
+
+    border-radius:30px;
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(255,119,57,.15),
+        rgba(251,191,36,.15)
+    );
+
+    border:1px solid var(--border);
+
+    backdrop-filter:blur(20px);
+}
+
+.admin-header h1{
+    font-size:3rem;
+    margin-bottom:10px;
+}
+
+.admin-header p{
+    color:var(--gray);
+}
+
+.admin-avatar{
+    width:80px;
+    height:80px;
+
+    border-radius:50%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:
+    linear-gradient(
+        135deg,
+        var(--accent),
+        var(--gold)
+    );
+
+    font-size:2rem;
+    font-weight:bold;
+}
+
+/* STATS */
+
+.admin-stats{
+    display:grid;
+    grid-template-columns:
+    repeat(auto-fit,minmax(250px,1fr));
+
+    gap:25px;
+
+    margin-bottom:40px;
+}
+
+.stat-card{
+    background:var(--glass);
+
+    backdrop-filter:blur(20px);
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius);
+
+    padding:30px;
+
+    transition:var(--transition);
+}
+
+.stat-card:hover{
+    transform:translateY(-8px);
+
+    box-shadow:
+    0 0 30px rgba(255,119,57,.25);
+
+    border-color:var(--accent);
+}
+
+.stat-icon{
+    width:60px;
+    height:60px;
+
+    border-radius:18px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:
+    linear-gradient(
+        135deg,
+        var(--accent),
+        var(--gold)
+    );
+
+    margin-bottom:20px;
+}
+
+.stat-number{
+    font-size:2.5rem;
+    font-weight:bold;
+
+    margin-bottom:10px;
+}
+
+.stat-title{
+    color:var(--gray);
+}
+
+/* GRID */
+
+.admin-grid{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:30px;
+}
+
+/* PANELS */
+
+.panel{
+    background:var(--glass);
+
+    backdrop-filter:blur(20px);
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius);
+
+    padding:30px;
+}
+
+.panel-title{
+    font-size:1.4rem;
+
+    margin-bottom:25px;
+
+    color:var(--gold);
+}
+
+/* BOOKINGS */
+
+.booking{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:20px;
+
+    margin-bottom:15px;
+
+    border-radius:16px;
+
+    background:
+    rgba(255,255,255,.03);
+
+    transition:var(--transition);
+}
+
+.booking:hover{
+    background:
+    rgba(255,119,57,.08);
+}
+
+.booking-name{
+    font-weight:bold;
+}
+
+.booking-date{
+    color:var(--gray);
+}
+
+/* STATUS */
+
+.status{
+    padding:8px 16px;
+
+    border-radius:999px;
+
+    font-size:.85rem;
+    font-weight:bold;
+}
+
+.status.pending{
+    background:
+    rgba(245,158,11,.15);
+
+    color:#f59e0b;
+}
+
+.status.success{
+    background:
+    rgba(16,185,129,.15);
+
+    color:#10b981;
+}
+
+.status.cancelled{
+    background:
+    rgba(239,68,68,.15);
+
+    color:#ef4444;
+}
+
+/* MANAGEMENT BUTTONS */
+
+.admin-actions{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.admin-actions button{
+    border:none;
+
+    padding:16px;
+
+    border-radius:16px;
+
+    cursor:pointer;
+
+    color:white;
+
+    font-weight:bold;
+
+    background:
+    linear-gradient(
+        135deg,
+        var(--accent),
+        var(--gold)
+    );
+
+    transition:var(--transition);
+}
+
+.admin-actions button:hover{
+    transform:translateY(-4px);
+
+    box-shadow:
+    0 0 25px rgba(255,119,57,.4);
+}
+
+/* TABLE */
+
+.table-wrapper{
+    margin-top:30px;
+
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+
+    border-collapse:collapse;
+}
+
+th{
+    text-align:left;
+
+    padding:18px;
+
+    color:var(--gold);
+
+    border-bottom:
+    1px solid rgba(255,255,255,.08);
+}
+
+td{
+    padding:18px;
+
+    border-bottom:
+    1px solid rgba(255,255,255,.05);
+}
+
+tr:hover{
+    background:
+    rgba(255,255,255,.03);
+}
+
+/* ACTIVITY */
+
+.activity-item{
+    display:flex;
+    justify-content:space-between;
+
+    margin-bottom:18px;
+
+    padding-bottom:18px;
+
+    border-bottom:
+    1px solid rgba(255,255,255,.05);
+}
+
+.activity-item:last-child{
+    border:none;
+}
+
+.activity-time{
+    color:var(--muted);
+}
+
+/* PROGRESS */
+
+.progress-box{
+    margin-top:25px;
+}
+
+.progress-box h4{
+    margin-bottom:12px;
+}
+
+.progress{
+    width:100%;
+    height:14px;
+
+    border-radius:999px;
+
+    overflow:hidden;
+
+    background:
+    rgba(255,255,255,.08);
+}
+
+.progress-bar{
+    height:100%;
+
+    border-radius:999px;
+
+    background:
+    linear-gradient(
+        90deg,
+        var(--accent),
+        var(--gold)
+    );
+}
+
+/* REVENUE CARD */
+
+.revenue-card{
+    padding:30px;
+
+    text-align:center;
+}
+
+.revenue-card h2{
+    font-size:3rem;
+
+    color:var(--gold);
+
+    margin-bottom:10px;
+}
+
+.revenue-card p{
+    color:var(--gray);
+}
+
+/* FOOTER */
+
+.admin-footer{
+    margin-top:40px;
+
+    text-align:center;
+
+    color:var(--muted);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1100px){
+
+.admin-grid{
+    grid-template-columns:1fr;
+}
+
+}
+
+@media(max-width:768px){
+
+.admin-dashboard{
+    padding:20px;
+}
+
+.admin-header{
+    flex-direction:column;
+    text-align:center;
+    gap:20px;
+}
+
+.admin-header h1{
+    font-size:2rem;
+}
+
+.admin-stats{
+    grid-template-columns:1fr;
+}
+
+.booking{
+    flex-direction:column;
+    gap:10px;
+    align-items:flex-start;
+}
+
+}
