@@ -1,5 +1,6 @@
+// Login.jsx
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import axios from "axios"
 
 import {
@@ -7,7 +8,8 @@ import {
   FaLock,
   FaEye,
   FaEyeSlash,
-  FaGoogle
+  FaGoogle,
+  FaUserPlus
 } from "react-icons/fa"
 
 import { toast } from "react-toastify"
@@ -79,67 +81,67 @@ function Login() {
     return true
   }
 
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
 
-  e.preventDefault()
+    e.preventDefault()
 
-  if (!validateForm()) {
-    return
+    if (!validateForm()) {
+      return
+    }
+
+    try {
+
+      setLoading(true)
+
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        {
+          email: formData.email.trim(),
+          password: formData.password,
+        }
+      )
+
+      toast.success(
+        `Welcome back ${res.data.user.username}!`
+      )
+
+      localStorage.setItem(
+        "token",
+        res.data.token
+      )
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(res.data.user)
+      )
+
+      setTimeout(() => {
+
+        if (
+          res.data.user.role === "admin"
+        ) {
+          navigate("/admin-dashboard")
+        } else {
+          navigate("/user-dashboard")
+        }
+
+      }, 1500)
+
+    } catch (error) {
+
+      toast.error(
+        error.response?.data?.message ||
+        "Login failed"
+      )
+
+    } finally {
+
+      setLoading(false)
+
+    }
+
   }
-
-  try {
-
-    setLoading(true)
-
-    const res = await axios.post(
-      "http://localhost:5000/api/auth/login",
-      {
-        email: formData.email.trim(),
-        password: formData.password,
-      }
-    )
-
-    toast.success(
-      `Welcome back ${res.data.user.username}!`
-    )
-
-    localStorage.setItem(
-      "token",
-      res.data.token
-    )
-
-    localStorage.setItem(
-      "user",
-      JSON.stringify(res.data.user)
-    )
-
-    setTimeout(() => {
-
-      if (
-        res.data.user.role === "admin"
-      ) {
-setTimeout(() => {
-  navigate("/admin-dashboard")
-}, 1500)      } else {
-        navigate("/user-dashboard")
-      }
-
-    }, 1500)
-
-  } catch (error) {
-
-    toast.error(
-      error.response?.data?.message ||
-      "Login failed"
-    )
-
-  } finally {
-
-    setLoading(false)
-
-  }
-
-}
+  
   const googleLogin = () => {
 
     window.open(
@@ -243,6 +245,13 @@ setTimeout(() => {
 
             </div>
 
+            {/* Forgot Password Link */}
+            <div className="forgot-password-container">
+              <Link to="/forgot-password" className="forgot-password-link">
+                Forgot Password?
+              </Link>
+            </div>
+
             <button
               type="submit"
               disabled={loading}
@@ -272,6 +281,17 @@ setTimeout(() => {
 
             Continue With Google
           </button>
+
+          {/* Sign Up Link */}
+          <div className="signup-link-container">
+            <p>
+              Don't have an account?{" "}
+              <Link to="/signup" className="signup-link">
+                <FaUserPlus className="signup-icon" />
+                Sign Up
+              </Link>
+            </p>
+          </div>
 
         </div>
 
