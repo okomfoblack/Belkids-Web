@@ -34,11 +34,6 @@ import gallery6 from "../assets/Belkids-Images/image9.PNG";
 import aboutImg from "../assets/Belkids-Images/image4.PNG";
 import ctaBg from "../assets/Belkids-Images/image5.PNG";
 
-// 🎬 IMPORT VIDEOS
-import video1 from "../assets/Belkids-Images/image18.MP4"; // Assuming this is a video file
-import video2 from "../assets/Belkids-Images/image19.MP4"; // Assuming this is a video file
-import video3 from "../assets/Belkids-Images/image20.MP4"; // Assuming this is a video file
-
 
 function LandingPage() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -84,9 +79,7 @@ function LandingPage() {
     { id: 5, label: "Snack Bar", type: "image", src: gallery5 },
     { id: 6, label: "Playground", type: "image", src: gallery6 },
     // Videos interleaved
-    { id: 7, label: "Party Fun", type: "video", src: video1, },
-    { id: 8, label: "Pool Splash", type: "video", src: video2, },
-    { id: 9, label: "Game Action", type: "video", src: video3, }
+    
   ];
 
   // Testimonials (unchanged)
