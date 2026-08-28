@@ -178,6 +178,7 @@ form {
     border-color: #4CAF50;
     background: #FFFFFF;
     box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.08);
+    color: #2C3E50;
 }
 
 .input-group input::placeholder {
@@ -200,7 +201,7 @@ form {
     transition: color 0.3s ease;
 }
 
-.input-group input:focus + .input-icon {
+.input-group input:focus ~ .input-icon {
     color: #4CAF50;
 }
 
@@ -374,7 +375,6 @@ button[type="submit"]:disabled {
     margin-bottom: 2px;
 }
 
-/* Profile Image Container - Green border instead of orange */
 .profile-image-container {
     position: relative;
     width: 110px;
@@ -399,7 +399,6 @@ button[type="submit"]:disabled {
     transition: all 0.3s ease;
 }
 
-/* Default avatar placeholder - no orange */
 .profile-preview.default-avatar {
     display: flex;
     align-items: center;
@@ -414,7 +413,6 @@ button[type="submit"]:disabled {
     filter: brightness(0.7);
 }
 
-/* Profile Image Overlay - No orange */
 .profile-image-overlay {
     position: absolute;
     top: 0;
@@ -449,12 +447,10 @@ button[type="submit"]:disabled {
     color: #FFFFFF;
 }
 
-/* File Input - Hidden */
 .profile-upload input[type="file"] {
     display: none;
 }
 
-/* Upload hint - No orange */
 .upload-hint {
     color: #A0AEC0;
     font-size: 0.75rem;
@@ -469,6 +465,21 @@ button[type="submit"]:disabled {
     background: #FDF2F2;
     border-radius: 10px;
     border-left: 3px solid #E74C3C;
+}
+
+/* ===== MATCH / NO-MATCH ===== */
+.match {
+    color: #2E7D32;
+    font-size: 0.85rem;
+    margin-top: -10px;
+    font-weight: 600;
+}
+
+.no-match {
+    color: #E74C3C;
+    font-size: 0.85rem;
+    margin-top: -10px;
+    font-weight: 600;
 }
 
 /* ===== RESPONSIVE ===== */

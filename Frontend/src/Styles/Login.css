@@ -178,6 +178,7 @@ form {
     border-color: #4CAF50;
     background: #FFFFFF;
     box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.08);
+    color: #2C3E50;
 }
 
 .input-group input::placeholder {
@@ -200,7 +201,7 @@ form {
     transition: color 0.3s ease;
 }
 
-.input-group input:focus + .input-icon {
+.input-group input:focus ~ .input-icon {
     color: #4CAF50;
 }
 
