@@ -16,6 +16,10 @@ import { toast } from "react-toastify"
 
 import "../Styles/Login.css"
 
+// ✅ FIX: Use import.meta.env for Vite
+// If you're using Create React App, change to: process.env.REACT_APP_API_URL
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 function Login() {
 
   const navigate = useNavigate()
@@ -90,11 +94,11 @@ function Login() {
     }
 
     try {
-
+      
       setLoading(true)
 
       const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        `${API_URL}/api/auth/login`,
         {
           email: formData.email.trim(),
           password: formData.password,
@@ -145,7 +149,7 @@ function Login() {
   const googleLogin = () => {
 
     window.open(
-      "http://localhost:5000/auth/google",
+      `${API_URL}/auth/google`,
       "_self"
     )
 
