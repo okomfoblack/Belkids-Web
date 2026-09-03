@@ -17,7 +17,7 @@ import {
   FaPlay
 } from "react-icons/fa";
 import { useState } from "react";
-import "../Styles/LandingPage.css";
+import "./Styles/LandingPage.css"; // Assuming you have a CSS file for LandingPage styles
 
 // 🖼️ IMPORT IMAGES
 import heroBg from "../assets/Belkids-Images/image16.PNG"; // Assuming this is the hero background image

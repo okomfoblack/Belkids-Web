@@ -107,6 +107,15 @@
   opacity: 0.8;
 }
 
+/* Logo Image */
+.logo-img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display: block;
+  border-radius: 4px;
+}
+
 /* Mobile Menu Toggle */
 .mobile-menu-toggle {
   display: none;
@@ -331,6 +340,85 @@
 
 .dropdown-menu-item:hover .dropdown-item-label {
   color: var(--primary-green);
+}
+
+/* ===== CONTACT DROPDOWN STYLES ===== */
+.contact-trigger {
+  cursor: pointer;
+}
+
+.contact-trigger:hover {
+  color: var(--text-dark);
+  background: rgba(93, 64, 55, 0.08);
+}
+
+.contact-dropdown-menu {
+  min-width: 280px !important;
+  padding: 16px !important;
+}
+
+.contact-dropdown-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contact-info-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.contact-info-item:hover {
+  background: rgba(46, 125, 50, 0.06);
+}
+
+.contact-icon-wrapper {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(46, 125, 50, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.contact-info-item:hover .contact-icon-wrapper {
+  background: var(--primary-green);
+}
+
+.contact-icon {
+  font-size: 1rem;
+  color: var(--primary-green);
+  transition: all 0.3s ease;
+}
+
+.contact-info-item:hover .contact-icon {
+  color: var(--primary-white);
+}
+
+.contact-info-item div {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-label {
+  font-size: 0.7rem;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.contact-value {
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  font-weight: 500;
 }
 
 /* Profile Section */
@@ -650,6 +738,29 @@
     font-size: 0.8rem;
   }
 
+  /* Mobile Contact Dropdown */
+  .contact-dropdown-menu {
+    min-width: 100% !important;
+    padding: 12px !important;
+  }
+
+  .contact-info-item {
+    padding: 10px 12px;
+  }
+
+  .contact-icon-wrapper {
+    width: 34px;
+    height: 34px;
+  }
+
+  .contact-icon {
+    font-size: 0.9rem;
+  }
+
+  .contact-value {
+    font-size: 0.85rem;
+  }
+
   .mobile-logout-link {
     display: block;
   }
@@ -711,11 +822,23 @@
   }
 }
 
-/* Make the logo smaller and perfectly centered */
-.logo-img {
-  width: 28px;          /* Reduced from 45px → 28px (mini size) */
-  height: 28px;         /* Same as width to keep it square */
-  object-fit: contain;  /* Keeps it from stretching */
-  display: block;
-  border-radius: 4px;   /* Optional: tiny rounding */
+/* High-DPI screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .navbar {
+    border-bottom: 0.5px solid rgba(0, 0, 0, 0.06);
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .dropdown-menu {
+    animation: none !important;
+  }
 }

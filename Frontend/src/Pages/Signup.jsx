@@ -13,7 +13,7 @@ import {
 
 import { toast } from "react-toastify";
 
-import "../Styles/Signup.css";
+import "./Styles/Signup.css";
 
 function Signup() {
   const navigate = useNavigate();

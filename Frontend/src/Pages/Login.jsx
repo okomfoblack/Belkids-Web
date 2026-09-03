@@ -14,7 +14,7 @@ import {
 
 import { toast } from "react-toastify"
 
-import "../Styles/Login.css"
+import "./Styles/Login.css"
 
 // ✅ FIX: Use import.meta.env for Vite
 // If you're using Create React App, change to: process.env.REACT_APP_API_URL

@@ -8,6 +8,8 @@ import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import UserDashboard from "./user-dashboard/UserDashboard";
 import AdminDashboard from "./admin-dashboard/Admin-Dashboard";
+import EventPage from "./Pages/EventPage";  
+import SnackPage from "./Pages/SnackPage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -35,6 +37,8 @@ function App() {
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/user-dashboard" element={<UserDashboard />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/events" element={<EventPage />} />
+        <Route path="/snacks" element={<SnackPage />} />
       </Routes>
     </Router>
   );

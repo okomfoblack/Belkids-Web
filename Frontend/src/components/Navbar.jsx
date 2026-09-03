@@ -6,7 +6,6 @@ import {
   FaCalendarCheck, 
   FaUtensils, 
   FaSwimmingPool, 
-  FaGamepad, 
   FaShoppingBag, 
   FaUser, 
   FaUserCog, 
@@ -22,17 +21,16 @@ import {
   FaIceCream,
   FaCandyCane,
   FaSwimmer,
-  FaFutbol,
-  FaBasketballBall,
-  FaTableTennis,
   FaConciergeBell,
-  FaStore
+  FaWhatsapp,
+  FaEnvelope,
+  FaMapMarkerAlt,
+  FaClock
 } from "react-icons/fa";
 import { GiPopcorn } from "react-icons/gi";
-import "../Styles/Navbar.css";
+import "./Styles/Navbar.css";
 
-// ===== IMPORT YOUR LOGO IMAGE =====
-import logo from "../assets/Belkids-Images/image7.PNG"; // ✅ CORRECT: Import the image
+import logo from "../assets/Belkids-Images/image7.PNG";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -43,59 +41,6 @@ function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const dropdownTimeoutRef = useRef(null);
-
-  const navItems = [
-    { path: "/", label: "Home", icon: FaHome, hasDropdown: false },
-    { 
-      path: "/events", 
-      label: "Events", 
-      icon: FaCalendarCheck,
-      hasDropdown: true,
-      subItems: [
-        { path: "/events/birthday", label: "Birthday Parties", icon: FaBirthdayCake },
-        { path: "/events/school", label: "School Bookings", icon: FaSchool },
-        { path: "/events/corporate", label: "Corporate Events", icon: FaUser }
-      ]
-    },
-    { 
-      path: "/services", 
-      label: "Services", 
-      icon: FaConciergeBell,
-      hasDropdown: true,
-      subItems: [
-        { path: "/restaurant", label: "Restaurant", icon: FaUtensils },
-        { path: "/pool", label: "Swimming Pool", icon: FaSwimmingPool },
-        { path: "/pool/equipment", label: "Swim Gear", icon: FaDumbbell },
-        { path: "/pool/lessons", label: "Swim Lessons", icon: FaSwimmer }
-      ]
-    },
-    { 
-      path: "/games", 
-      label: "Games", 
-      icon: FaGamepad,
-      hasDropdown: true,
-      subItems: [
-        { path: "/games/foosball", label: "Foosball", icon: FaTableTennis },
-        { path: "/games/pool", label: "Pool Table", icon: FaGamepad },
-        { path: "/games/football", label: "Football", icon: FaFutbol },
-        { path: "/games/basketball", label: "Basketball", icon: FaBasketballBall }
-      ]
-    },
-    { 
-      path: "/snackbar", 
-      label: "Snacks", 
-      icon: FaCocktail,
-      hasDropdown: true,
-      subItems: [
-        { path: "/snackbar/popcorn", label: "Popcorn", icon: GiPopcorn },
-        { path: "/snackbar/cotton-candy", label: "Cotton Candy", icon: FaCandyCane },
-        { path: "/snackbar/ice-cream", label: "Ice Cream", icon: FaIceCream },
-        { path: "/snackbar/drinks", label: "Soft Drinks", icon: FaCocktail }
-      ]
-    },
-    { path: "/shop", label: "Shop", icon: FaShoppingBag, hasDropdown: false },
-    { path: "/contact", label: "Contact", icon: FaPhoneAlt, hasDropdown: false }
-  ];
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
@@ -167,10 +112,9 @@ function Navbar() {
   return (
     <nav className={`navbar ${scrolled ? "navbar-scrolled" : ""}`}>
       <div className="navbar-container">
-        {/* ========== LOGO WITH IMPORTED IMAGE ========== */}
+        {/* ===== LOGO ===== */}
         <Link to="/" className="navbar-logo" onClick={closeMobileMenu}>
           <div className="logo-icon-wrapper">
-            {/* ✅ NOW USING THE IMPORTED LOGO */}
             <img 
               src={logo} 
               alt="Belkids Playground" 
@@ -183,51 +127,162 @@ function Navbar() {
           </div>
         </Link>
 
-        {/* Mobile Menu Toggle */}
+        {/* ===== MOBILE MENU TOGGLE ===== */}
         <button className="mobile-menu-toggle" onClick={toggleMobileMenu}>
           {mobileMenuOpen ? <FaTimes /> : <FaBars />}
         </button>
 
-        {/* Navigation Links */}
+        {/* ===== NAVIGATION LINKS ===== */}
         <div className={`navbar-links ${mobileMenuOpen ? "mobile-menu-open" : ""}`}>
           <ul className="nav-list">
-            {navItems.map((item) => (
-              <li 
-                key={item.path} 
-                className={`nav-item ${item.hasDropdown ? "has-dropdown" : ""}`}
-                onMouseEnter={() => item.hasDropdown && handleDropdownEnter(item.path)}
-                onMouseLeave={handleDropdownLeave}
+            {/* ===== HOME ===== */}
+            <li className="nav-item">
+              <Link to="/" className={`nav-link ${isActive("/") ? "active" : ""}`} onClick={closeMobileMenu}>
+                <FaHome className="nav-icon" />
+                <span>Home</span>
+              </Link>
+            </li>
+
+            {/* ===== EVENTS - REGULAR LINK (NOT DROPDOWN) ===== */}
+            <li className="nav-item">
+              <Link 
+                to="/events" 
+                className={`nav-link ${isActive("/events") ? "active" : ""}`}
+                onClick={closeMobileMenu}
               >
-                <Link 
-                  to={item.path} 
-                  className={`nav-link ${isActive(item.path) ? "active" : ""}`}
-                  onClick={closeMobileMenu}
-                >
-                  <item.icon className="nav-icon" />
-                  <span>{item.label}</span>
-                  {item.hasDropdown && <FaChevronDown className="dropdown-arrow-indicator" />}
-                </Link>
+                <FaCalendarCheck className="nav-icon" />
+                <span>Events</span>
+              </Link>
+            </li>
 
-                {item.hasDropdown && (
-                  <div className={`dropdown-menu-container ${activeDropdown === item.path ? "dropdown-open" : ""}`}>
-                    {item.subItems.map((subItem) => (
-                      <Link 
-                        key={subItem.path} 
-                        to={subItem.path} 
-                        className="dropdown-menu-item"
-                        onClick={closeMobileMenu}
-                      >
-                        <div className="dropdown-item-icon-wrapper">
-                          <subItem.icon className="dropdown-item-icon" />
-                        </div>
-                        <span className="dropdown-item-label">{subItem.label}</span>
-                      </Link>
-                    ))}
+            {/* ===== SERVICES DROPDOWN ===== */}
+            <li 
+              className="nav-item has-dropdown"
+              onMouseEnter={() => handleDropdownEnter("/services")}
+              onMouseLeave={handleDropdownLeave}
+            >
+              <Link 
+                to="/services" 
+                className={`nav-link ${isActive("/services") ? "active" : ""}`}
+                onClick={closeMobileMenu}
+              >
+                <FaConciergeBell className="nav-icon" />
+                <span>Services</span>
+                <FaChevronDown className="dropdown-arrow-indicator" />
+              </Link>
+              <div className={`dropdown-menu-container ${activeDropdown === "/services" ? "dropdown-open" : ""}`}>
+                <Link to="/restaurant" className="dropdown-menu-item" onClick={closeMobileMenu}>
+                  <div className="dropdown-item-icon-wrapper">
+                    <FaUtensils className="dropdown-item-icon" />
                   </div>
-                )}
-              </li>
-            ))}
+                  <span className="dropdown-item-label">Restaurant</span>
+                </Link>
+                <Link to="/pool" className="dropdown-menu-item" onClick={closeMobileMenu}>
+                  <div className="dropdown-item-icon-wrapper">
+                    <FaSwimmingPool className="dropdown-item-icon" />
+                  </div>
+                  <span className="dropdown-item-label">Swimming Pool</span>
+                </Link>
+                <Link to="/pool/equipment" className="dropdown-menu-item" onClick={closeMobileMenu}>
+                  <div className="dropdown-item-icon-wrapper">
+                    <FaDumbbell className="dropdown-item-icon" />
+                  </div>
+                  <span className="dropdown-item-label">Swim Gear</span>
+                </Link>
+                <Link to="/pool/lessons" className="dropdown-menu-item" onClick={closeMobileMenu}>
+                  <div className="dropdown-item-icon-wrapper">
+                    <FaSwimmer className="dropdown-item-icon" />
+                  </div>
+                  <span className="dropdown-item-label">Swim Lessons</span>
+                </Link>
+              </div>
+            </li>
 
+            {/* ===== SNACKS - REGULAR LINK (NOT DROPDOWN) ===== */}
+            <li className="nav-item">
+              <Link 
+                to="/snacks" 
+                className={`nav-link ${isActive("/snacks") ? "active" : ""}`}
+                onClick={closeMobileMenu}
+              >
+                <FaCocktail className="nav-icon" />
+                <span>Snacks</span>
+              </Link>
+            </li>
+
+            {/* ===== SHOP ===== */}
+            <li className="nav-item">
+              <Link to="/shop" className={`nav-link ${isActive("/shop") ? "active" : ""}`} onClick={closeMobileMenu}>
+                <FaShoppingBag className="nav-icon" />
+                <span>Shop</span>
+              </Link>
+            </li>
+
+            {/* ===== CONTACT - DROPDOWN (NOT A LINK) ===== */}
+            <li 
+              className="nav-item has-dropdown contact-dropdown"
+              onMouseEnter={() => handleDropdownEnter("/contact")}
+              onMouseLeave={handleDropdownLeave}
+            >
+              <span 
+                className={`nav-link contact-trigger ${activeDropdown === "/contact" ? "active" : ""}`}
+              >
+                <FaPhoneAlt className="nav-icon" />
+                <span>Contact</span>
+                <FaChevronDown className="dropdown-arrow-indicator" />
+              </span>
+              <div className={`dropdown-menu-container contact-dropdown-menu ${activeDropdown === "/contact" ? "dropdown-open" : ""}`}>
+                <div className="contact-dropdown-content">
+                  <div className="contact-info-item">
+                    <div className="contact-icon-wrapper">
+                      <FaPhoneAlt className="contact-icon" />
+                    </div>
+                    <div>
+                      <span className="contact-label">Phone</span>
+                      <span className="contact-value">+233 24 123 4567</span>
+                    </div>
+                  </div>
+                  <div className="contact-info-item">
+                    <div className="contact-icon-wrapper">
+                      <FaWhatsapp className="contact-icon" />
+                    </div>
+                    <div>
+                      <span className="contact-label">WhatsApp</span>
+                      <span className="contact-value">+233 24 123 4567</span>
+                    </div>
+                  </div>
+                  <div className="contact-info-item">
+                    <div className="contact-icon-wrapper">
+                      <FaEnvelope className="contact-icon" />
+                    </div>
+                    <div>
+                      <span className="contact-label">Email</span>
+                      <span className="contact-value">info@belkids.com</span>
+                    </div>
+                  </div>
+                  <div className="contact-info-item">
+                    <div className="contact-icon-wrapper">
+                      <FaMapMarkerAlt className="contact-icon" />
+                    </div>
+                    <div>
+                      <span className="contact-label">Location</span>
+                      <span className="contact-value">123 Main Street, Accra</span>
+                    </div>
+                  </div>
+                  <div className="contact-info-item">
+                    <div className="contact-icon-wrapper">
+                      <FaClock className="contact-icon" />
+                    </div>
+                    <div>
+                      <span className="contact-label">Hours</span>
+                      <span className="contact-value">Mon-Sun: 8AM - 8PM</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            {/* ===== AUTH LINKS - MOBILE ===== */}
             {user ? (
               <>
                 <li className="nav-item mobile-dashboard-link">
@@ -272,7 +327,7 @@ function Navbar() {
             )}
           </ul>
 
-          {/* Desktop Profile */}
+          {/* ===== DESKTOP PROFILE ===== */}
           {user && (
             <div className="nav-profile">
               <div className="profile-container" onClick={toggleDropdown}>
@@ -289,17 +344,21 @@ function Navbar() {
               {dropdownOpen && (
                 <div className="dropdown-menu">
                   <Link to={getDashboardLink()} className="dropdown-item">
-                    <FaUserCog className="dropdown-icon" /> Dashboard
+                    <FaUserCog className="dropdown-icon" />
+                    Dashboard
                   </Link>
                   <Link to="/profile" className="dropdown-item">
-                    <FaUser className="dropdown-icon" /> Profile Settings
-                  </Link>  /
+                    <FaUser className="dropdown-icon" />
+                    Profile Settings
+                  </Link>
                   <Link to="/my-bookings" className="dropdown-item">
-                    <FaCalendarCheck className="dropdown-icon" /> My Bookings
+                    <FaCalendarCheck className="dropdown-icon" />
+                    My Bookings
                   </Link>
                   <div className="dropdown-divider"></div>
                   <button onClick={handleLogout} className="dropdown-item logout-btn">
-                    <FaSignOutAlt className="dropdown-icon" /> Logout
+                    <FaSignOutAlt className="dropdown-icon" />
+                    Logout
                   </button>
                 </div>
               )}
@@ -311,4 +370,4 @@ function Navbar() {
   );
 }
 
-export default Navbar; 
+export default Navbar;
