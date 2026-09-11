@@ -1,0 +1,900 @@
+/* =========================================================
+   BELKIDS PLAYGROUND
+   RESPONSIVE HEADER
+   320px MOBILE → LARGE DESKTOP
+========================================================= */
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-white: #ffffff;
+  --primary-white-off: #f8f9fa;
+
+  --primary-brown: #5d4037;
+  --primary-brown-dark: #3e2723;
+
+  --primary-green: #2e7d32;
+  --primary-green-dark: #1b5e20;
+  --primary-green-light: #4caf50;
+
+  --text-dark: #2c3e50;
+  --text-medium: #5a6c7d;
+
+  --logout-red: #e74c3c;
+
+  --header-border: rgba(0, 0, 0, 0.07);
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header {
+  width: 100%;
+
+  background: var(--primary-white);
+
+  border-bottom: 1px solid var(--header-border);
+
+  position: sticky;
+
+  top: 0;
+
+  z-index: 1000;
+
+  overflow: visible;
+}
+
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.header-container {
+  width: 100%;
+
+  max-width: 1400px;
+
+  margin: 0 auto;
+
+  padding: 8px clamp(12px, 2vw, 28px);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: clamp(10px, 2vw, 24px);
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.header-logo {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  flex: 0 0 auto;
+
+  min-width: 0;
+
+  text-decoration: none;
+
+  transition: transform 0.3s ease;
+}
+
+.header-logo:hover {
+  transform: scale(1.04);
+}
+
+.logo-icon-wrapper {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+.logo-img {
+  display: block;
+
+  width: clamp(45px, 5vw, 72px);
+
+  height: clamp(45px, 5vw, 72px);
+
+  object-fit: contain;
+}
+
+
+/* =========================================================
+   LOGO ANIMATION
+========================================================= */
+
+.logo-anim-wobble .logo-img {
+  animation: wobbleTilt 3s ease-in-out infinite;
+
+  transform-origin: center bottom;
+
+  will-change: transform;
+}
+
+@keyframes wobbleTilt {
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  15% {
+    transform: rotate(-6deg);
+  }
+
+  30% {
+    transform: rotate(5deg);
+  }
+
+  45% {
+    transform: rotate(-4deg);
+  }
+
+  60% {
+    transform: rotate(3deg);
+  }
+
+  75% {
+    transform: rotate(-2deg);
+  }
+}
+
+
+/* =========================================================
+   RIGHT SIDE
+========================================================= */
+
+.header-right {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-end;
+
+  gap: clamp(8px, 1.4vw, 18px);
+
+  min-width: 0;
+
+  flex: 0 1 auto;
+}
+
+
+/* =========================================================
+   SOCIAL MEDIA
+========================================================= */
+
+.header-socials {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: clamp(5px, 0.7vw, 9px);
+
+  padding-right: clamp(8px, 1.3vw, 16px);
+
+  border-right: 1px solid var(--header-border);
+
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   SOCIAL ICON
+========================================================= */
+
+.social-icon {
+  width: clamp(28px, 2.4vw, 34px);
+
+  height: clamp(28px, 2.4vw, 34px);
+
+  border-radius: 50%;
+
+  background: var(--primary-white-off);
+
+  color: var(--text-medium);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  text-decoration: none;
+
+  font-size: clamp(0.68rem, 0.85vw, 0.82rem);
+
+  flex-shrink: 0;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.social-icon:hover {
+  background: var(--primary-green);
+
+  color: var(--primary-white);
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 4px 10px rgba(46, 125, 50, 0.2);
+}
+
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+.header-auth {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-end;
+
+  gap: clamp(5px, 0.7vw, 9px);
+
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   GENERAL BUTTON
+========================================================= */
+
+.header-btn {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: clamp(4px, 0.5vw, 7px);
+
+  min-height: 36px;
+
+  padding:
+    clamp(7px, 0.7vw, 10px)
+    clamp(10px, 1.2vw, 17px);
+
+  border-radius: 50px;
+
+  font-family: inherit;
+
+  font-size: clamp(0.7rem, 0.82vw, 0.84rem);
+
+  font-weight: 600;
+
+  line-height: 1;
+
+  white-space: nowrap;
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  border: 1.5px solid transparent;
+
+  flex-shrink: 0;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+
+/* =========================================================
+   BUTTON ICON
+========================================================= */
+
+.header-btn .btn-icon {
+  display: block;
+
+  font-size: clamp(0.68rem, 0.82vw, 0.82rem);
+
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   LOGIN / DASHBOARD
+========================================================= */
+
+.header-btn-outline {
+  background: transparent;
+
+  color: var(--primary-brown);
+
+  border-color: var(--primary-brown);
+}
+
+.header-btn-outline:hover {
+  background: var(--primary-brown);
+
+  color: var(--primary-white);
+
+  box-shadow:
+    0 4px 10px rgba(93, 64, 55, 0.2);
+}
+
+.header-btn-outline:hover .btn-icon {
+  color: var(--primary-white);
+}
+
+
+/* =========================================================
+   SIGN UP
+========================================================= */
+
+.header-btn-solid {
+  background:
+    linear-gradient(
+      135deg,
+      var(--primary-green),
+      var(--primary-green-dark)
+    );
+
+  color: var(--primary-white);
+
+  border-color: transparent;
+
+  box-shadow:
+    0 3px 12px rgba(46, 125, 50, 0.22);
+}
+
+.header-btn-solid:hover {
+  background:
+    linear-gradient(
+      135deg,
+      var(--primary-brown),
+      var(--primary-brown-dark)
+    );
+
+  color: var(--primary-white);
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 5px 14px rgba(93, 64, 55, 0.25);
+}
+
+.header-btn-solid .btn-icon {
+  color: var(--primary-white);
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+.header-btn-logout {
+  background: transparent;
+
+  color: var(--logout-red);
+
+  border-color: var(--logout-red);
+}
+
+.header-btn-logout:hover {
+  background: var(--logout-red);
+
+  color: var(--primary-white);
+
+  box-shadow:
+    0 4px 10px rgba(231, 76, 60, 0.2);
+}
+
+.header-btn-logout:hover .btn-icon {
+  color: var(--primary-white);
+}
+
+
+/* =========================================================
+   TABLET
+   768px AND BELOW
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .header-container {
+    padding: 7px 14px;
+
+    gap: 8px;
+  }
+
+  .logo-img {
+    width: 48px;
+
+    height: 48px;
+  }
+
+  .header-right {
+    gap: 7px;
+  }
+
+  .header-socials {
+    gap: 5px;
+
+    padding-right: 8px;
+  }
+
+  .social-icon {
+    width: 29px;
+
+    height: 29px;
+
+    font-size: 0.7rem;
+  }
+
+  .header-auth {
+    gap: 5px;
+  }
+
+  .header-btn {
+    min-height: 33px;
+
+    padding: 7px 10px;
+
+    font-size: 0.7rem;
+  }
+
+  .header-btn .btn-icon {
+    font-size: 0.68rem;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   600px AND BELOW
+
+   ROW 1:
+   LOGO              LOGIN  SIGN UP
+
+   ROW 2:
+          FACEBOOK INSTAGRAM TIKTOK
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .header-container {
+
+    display: grid;
+
+    grid-template-columns: auto 1fr;
+
+    grid-template-areas:
+      "logo auth"
+      "social social";
+
+    width: 100%;
+
+    padding: 8px 12px;
+
+    gap: 7px 10px;
+  }
+
+
+  /* LOGO */
+
+  .header-logo {
+    grid-area: logo;
+
+    justify-self: start;
+  }
+
+  .logo-img {
+    width: 47px;
+
+    height: 47px;
+  }
+
+
+  /* RIGHT SIDE */
+
+  .header-right {
+    display: contents;
+  }
+
+
+  /* AUTH BUTTONS */
+
+  .header-auth {
+    grid-area: auth;
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 6px;
+  }
+
+
+  /* SOCIALS */
+
+  .header-socials {
+    grid-area: social;
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 9px;
+
+    padding: 7px 0 3px;
+
+    border-right: none;
+
+    border-top: 1px solid var(--header-border);
+  }
+
+
+  /* SOCIAL ICON */
+
+  .social-icon {
+    width: 30px;
+
+    height: 30px;
+
+    font-size: 0.72rem;
+  }
+
+
+  /* AUTH BUTTON */
+
+  .header-btn {
+    min-height: 34px;
+
+    padding: 7px 12px;
+
+    font-size: 0.72rem;
+
+    gap: 5px;
+  }
+
+  .header-btn .btn-icon {
+    font-size: 0.7rem;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   480px AND BELOW
+========================================================= */
+
+@media (max-width: 480px) {
+
+  .header-container {
+    padding: 7px 10px;
+
+    gap: 6px 8px;
+  }
+
+
+  .logo-img {
+    width: 44px;
+
+    height: 44px;
+  }
+
+
+  .header-auth {
+    gap: 5px;
+  }
+
+
+  .header-btn {
+    min-height: 32px;
+
+    padding: 6px 10px;
+
+    font-size: 0.68rem;
+  }
+
+
+  .header-btn .btn-icon {
+    font-size: 0.66rem;
+  }
+
+
+  .header-socials {
+    gap: 8px;
+
+    padding-top: 6px;
+  }
+
+
+  .social-icon {
+    width: 28px;
+
+    height: 28px;
+
+    font-size: 0.68rem;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   400px AND BELOW
+========================================================= */
+
+@media (max-width: 400px) {
+
+  .header-container {
+    padding: 6px 8px;
+
+    gap: 6px;
+  }
+
+
+  .logo-img {
+    width: 41px;
+
+    height: 41px;
+  }
+
+
+  .header-auth {
+    gap: 4px;
+  }
+
+
+  .header-btn {
+    min-height: 31px;
+
+    padding: 6px 8px;
+
+    font-size: 0.64rem;
+  }
+
+
+  .header-btn .btn-icon {
+    font-size: 0.62rem;
+  }
+
+
+  .header-socials {
+    gap: 7px;
+  }
+
+
+  .social-icon {
+    width: 27px;
+
+    height: 27px;
+
+    font-size: 0.64rem;
+  }
+}
+
+
+/* =========================================================
+   360px PHONES
+========================================================= */
+
+@media (max-width: 360px) {
+
+  .header-container {
+    padding: 6px 7px;
+
+    gap: 5px;
+  }
+
+
+  .logo-img {
+    width: 39px;
+
+    height: 39px;
+  }
+
+
+  .header-auth {
+    gap: 3px;
+  }
+
+
+  .header-btn {
+    min-height: 30px;
+
+    padding: 5px 7px;
+
+    font-size: 0.6rem;
+  }
+
+
+  .header-btn .btn-icon {
+    font-size: 0.59rem;
+  }
+
+
+  .header-socials {
+    gap: 6px;
+
+    padding-top: 5px;
+  }
+
+
+  .social-icon {
+    width: 25px;
+
+    height: 25px;
+
+    font-size: 0.6rem;
+  }
+}
+
+
+/* =========================================================
+   320px PHONES
+========================================================= */
+
+@media (max-width: 320px) {
+
+  .header-container {
+    padding: 5px 6px;
+
+    gap: 5px;
+  }
+
+
+  .logo-img {
+    width: 37px;
+
+    height: 37px;
+  }
+
+
+  .header-auth {
+    gap: 3px;
+  }
+
+
+  .header-btn {
+    min-height: 29px;
+
+    padding: 5px 6px;
+
+    font-size: 0.58rem;
+
+    border-width: 1px;
+  }
+
+
+  .header-btn .btn-icon {
+    font-size: 0.56rem;
+  }
+
+
+  .header-socials {
+    gap: 5px;
+
+    padding-top: 5px;
+  }
+
+
+  .social-icon {
+    width: 24px;
+
+    height: 24px;
+
+    font-size: 0.57rem;
+  }
+}
+
+
+/* =========================================================
+   LANDSCAPE MOBILE
+========================================================= */
+
+@media (max-height: 450px) and (orientation: landscape) {
+
+  .header-container {
+    padding-top: 5px;
+
+    padding-bottom: 5px;
+  }
+
+
+  .logo-img {
+    width: 40px;
+
+    height: 40px;
+  }
+
+
+  .social-icon {
+    width: 26px;
+
+    height: 26px;
+  }
+
+
+  .header-btn {
+    min-height: 30px;
+
+    padding: 6px 9px;
+  }
+}
+
+
+/* =========================================================
+   TOUCH DEVICES
+========================================================= */
+
+@media (hover: none) {
+
+  .header-logo:hover {
+    transform: none;
+  }
+
+  .social-icon:hover {
+    transform: none;
+
+    box-shadow: none;
+  }
+
+  .header-btn-solid:hover {
+    transform: none;
+
+    box-shadow:
+      0 3px 12px rgba(46, 125, 50, 0.22);
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .logo-anim-wobble .logo-img {
+    animation: none !important;
+  }
+
+  .header-logo,
+  .social-icon,
+  .header-btn {
+    transition: none !important;
+  }
+}

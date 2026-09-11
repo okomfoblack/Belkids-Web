@@ -1,21 +1,21 @@
 // src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import LandingPage from "./Pages/LandingPage";
+import LandingPage from "./Pages/HomePage";
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import UserDashboard from "./user-dashboard/UserDashboard";
 import AdminDashboard from "./admin-dashboard/Admin-Dashboard";
-import EventPage from "./Pages/EventPage";  
-import SnackPage from "./Pages/SnackPage";
+import Header from "./components/Header";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
     <Router>  {/* ✅ ONLY ONE Router - right here */}
+      <Header />  {/* ✅ Header is outside of Routes, so it appears on all pages */}
       <Navbar />
       <ToastContainer 
         position="top-right"
@@ -37,8 +37,6 @@ function App() {
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/user-dashboard" element={<UserDashboard />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        <Route path="/events" element={<EventPage />} />
-        <Route path="/snacks" element={<SnackPage />} />
       </Routes>
     </Router>
   );

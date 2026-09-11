@@ -2,34 +2,25 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { 
-  FaCocktail,
-  FaIceCream,
-  FaCandyCane,
-  FaCoffee,
-  FaShoppingCart,
   FaStar,
   FaPhoneAlt,
   FaCalendarAlt,
-  FaClock,
   FaTag,
-  FaHeart,
-  FaGlassWhiskey,
-  FaGlassMartiniAlt,
-  FaMugHot,
-  FaWineBottle,
-  FaLemon,
-  FaTint
+  FaShoppingCart
 } from "react-icons/fa";
-import { GiPopcorn, GiIceCreamScoop, GiCandyCanes } from "react-icons/gi";
-import { Link } from "react-router-dom";
+import { GiPopcorn, GiCandyCanes } from "react-icons/gi";
+import { FaLemon, FaBeer } from "react-icons/fa";
 import "./Styles/Snacks.css";
 
-import popcornImg from "../assets/Belkids-Images/image5.PNG";
-import cottonCandyImg from "../assets/Belkids-Images/image5.PNG";
-import iceCreamImg from "../assets/Belkids-Images/image5.PNG";
-import drinksImg from "../assets/Belkids-Images/image5.PNG";
-import candyImg from "../assets/Belkids-Images/image5.PNG";
-import nachosImg from "../assets/Belkids-Images/image5.PNG";
+import popcornImg from "../assets/Belkids-Images/popcorn.png";
+import cottonCandyImg from "../assets/Belkids-Images/cotton.webp";
+import maltImg from "../assets/Belkids-Images/malt.png";
+import fantaImg from "../assets/Belkids-Images/fanta.webp";
+import spriteImg from "../assets/Belkids-Images/sprite.jpg";
+import cokeImg from "../assets/Belkids-Images/coke.jpg";
+import yogurtImg from "../assets/Belkids-Images/yogo.jpg";
+import orangeJuiceImg from "../assets/Belkids-Images/orange.avif";
+import watermelonJuiceImg from "../assets/Belkids-Images/melon.jpg";
 
 function Snacks() {
   const snacks = [
@@ -46,127 +37,92 @@ function Snacks() {
     {
       id: 2,
       title: "Cotton Candy",
-      icon: FaCandyCane,
+      icon: GiCandyCanes,
       image: cottonCandyImg,
       description: "Fluffy, melt-in-your-mouth cotton candy in pink, blue, or rainbow colors.",
       category: "Sweets",
       popular: true,
       color: "#E91E63"
     },
+    // ===== DRINKS =====
     {
       id: 3,
-      title: "Ice Cream",
-      icon: FaIceCream,
-      image: iceCreamImg,
-      description: "Creamy, delicious ice cream with a variety of flavors. Choose from chocolate, vanilla, strawberry, and more.",
-      category: "Frozen",
+      title: "Malt",
+      icon: FaBeer,
+      image: maltImg,
+      description: "Rich and creamy malt drink, perfect for a refreshing treat.",
+      category: "Drinks",
+      popular: true,
+      color: "#5D4037"
+    },
+    {
+      id: 4,
+      title: "Fanta",
+      icon: FaLemon,
+      image: fantaImg,
+      description: "Sparkling orange soda with a refreshing citrus taste.",
+      category: "Drinks",
+      popular: true,
+      color: "#FF6F00"
+    },
+    {
+      id: 5,
+      title: "Sprite",
+      icon: FaLemon,
+      image: spriteImg,
+      description: "Crisp, clean lemon-lime soda that refreshes and quenches thirst.",
+      category: "Drinks",
+      popular: false,
+      color: "#1A237E"
+    },
+    {
+      id: 6,
+      title: "Coca-Cola",
+      icon: FaBeer,
+      image: cokeImg,
+      description: "Classic, refreshing cola drink enjoyed by everyone.",
+      category: "Drinks",
+      popular: true,
+      color: "#C62828"
+    },
+    {
+      id: 7,
+      title: "Yogurt",
+      icon: FaLemon,
+      image: yogurtImg,
+      description: "Creamy, delicious yogurt in various flavors. A healthy and tasty snack.",
+      category: "Snacks",
       popular: false,
       color: "#2E7D32"
     },
     {
-      id: 4,
-      title: "Nachos",
-      icon: FaCoffee,
-      image: nachosImg,
-      description: "Crispy tortilla chips served with melted cheese, salsa, and guacamole. A perfect savory snack.",
-      category: "Snacks",
-      popular: false,
-      color: "#BF360C"
-    },
-    {
-      id: 5,
-      title: "Candy & Sweets",
-      icon: GiCandyCanes,
-      image: candyImg,
-      description: "A variety of colorful candies, lollipops, and sweet treats that kids and adults love.",
-      category: "Sweets",
-      popular: false,
-      color: "#FF6F00"
-    },
-    // ===== DRINKS SECTION (6 drinks) =====
-    {
-      id: 6,
-      title: "Fresh Lemonade",
+      id: 8,
+      title: "Orange Juice",
       icon: FaLemon,
-      image: drinksImg,
-      description: "Refreshing homemade lemonade made with fresh lemons and a touch of sweetness.",
+      image: orangeJuiceImg,
+      description: "Freshly squeezed orange juice, packed with vitamin C and natural sweetness.",
       category: "Drinks",
       popular: true,
-      color: "#F9A825"
-    },
-    {
-      id: 7,
-      title: "Fruit Smoothie",
-      icon: FaGlassWhiskey,
-      image: drinksImg,
-      description: "Blended fresh fruits with yogurt and honey. A healthy and delicious treat.",
-      category: "Drinks",
-      popular: false,
-      color: "#E040FB"
-    },
-    {
-      id: 8,
-      title: "Iced Tea",
-      icon: FaMugHot,
-      image: drinksImg,
-      description: "Classic iced tea served with lemon and mint leaves. Perfect for a hot day.",
-      category: "Drinks",
-      popular: false,
-      color: "#6D4C41"
+      color: "#F57C00"
     },
     {
       id: 9,
-      title: "Milkshake",
-      icon: FaGlassMartiniAlt,
-      image: drinksImg,
-      description: "Thick and creamy milkshakes in chocolate, vanilla, and strawberry flavors.",
+      title: "Watermelon Juice",
+      icon: FaLemon,
+      image: watermelonJuiceImg,
+      description: "Refreshing watermelon juice, naturally sweet and perfect for a hot day.",
       category: "Drinks",
       popular: true,
-      color: "#D81B60"
-    },
-    {
-      id: 10,
-      title: "Fresh Juice",
-      icon: FaTint,
-      image: drinksImg,
-      description: "Freshly squeezed orange, apple, and mixed fruit juices. 100% natural and healthy.",
-      category: "Drinks",
-      popular: false,
-      color: "#FF6F00"
-    },
-    {
-      id: 11,
-      title: "Sparkling Water",
-      icon: FaWineBottle,
-      image: drinksImg,
-      description: "Refreshing sparkling water with natural fruit essences. Zero calories, all refreshment.",
-      category: "Drinks",
-      popular: false,
-      color: "#1A237E"
+      color: "#D32F2F"
     }
   ];
 
-  const categories = ["All", "Snacks", "Sweets", "Frozen", "Drinks"];
+  const categories = ["All", "Snacks", "Sweets", "Drinks"];
   const [activeCategory, setActiveCategory] = useState("All");
 
   const filteredSnacks = activeCategory === "All" 
     ? snacks 
     : snacks.filter(snack => snack.category === activeCategory);
-
-  const specials = [
-    {
-      title: "Family Combo",
-      description: "2 Popcorns + 2 Soft Drinks"
-    },
-    {
-      title: "Kids Special",
-      description: "Cotton Candy + Ice Cream + Drink"
-    },
-    {
-      title: "Party Platter",
-      description: "Popcorn, Nachos, Candy & 4 Drinks"
-    }
-  ];
 
   return (
     <div className="snacks-page">
@@ -185,16 +141,6 @@ function Snacks() {
               From buttery popcorn to refreshing drinks, our snack bar offers a variety 
               of tasty treats and beverages to make your visit even more enjoyable.
             </p>
-            <div className="snacks-hero-buttons">
-              <button className="btn-primary">
-                <FaShoppingCart className="btn-icon" />
-                View Menu
-              </button>
-              <button className="btn-secondary">
-                <FaPhoneAlt className="btn-icon" />
-                Contact Us
-              </button>
-            </div>
           </motion.div>
         </div>
       </section>
@@ -273,44 +219,6 @@ function Snacks() {
         </div>
       </section>
 
-      {/* ===== SPECIALS / DEALS ===== */}
-      <section className="specials-section">
-        <div className="container">
-          <motion.div 
-            className="section-header"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <span className="section-tag">Special Deals</span>
-            <h2>Value <span className="highlight-green">Combos</span></h2>
-            <p>Get more for less with our special combo deals</p>
-          </motion.div>
-
-          <div className="specials-grid">
-            {specials.map((special, index) => (
-              <motion.div
-                key={index}
-                className="special-card"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.6 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -5 }}
-              >
-                <div className="special-icon">
-                  <FaTag />
-                </div>
-                <h3>{special.title}</h3>
-                <p>{special.description}</p>
-                <button className="special-btn">Order in Store</button>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ===== CTA SECTION ===== */}
       <section className="cta-section">
         <div className="cta-overlay"></div>
@@ -324,16 +232,6 @@ function Snacks() {
           >
             <h2>Craving Something <span className="highlight-text">Delicious</span>?</h2>
             <p>Visit our snack bar today and treat yourself to something tasty</p>
-            <div className="cta-buttons">
-              <button className="btn-primary">
-                <FaCalendarAlt className="btn-icon" />
-                Visit Us
-              </button>
-              <button className="btn-secondary">
-                <FaPhoneAlt className="btn-icon" />
-                Call Us
-              </button>
-            </div>
           </motion.div>
         </div>
       </section>
