@@ -13,12 +13,9 @@ import {
 } from "react-icons/fa"
 
 import { toast } from "react-toastify"
-
 import "./Styles/Login.css"
 
-// ✅ FIX: Use import.meta.env for Vite
-// If you're using Create React App, change to: process.env.REACT_APP_API_URL
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = "http://localhost:5000";
 
 function Login() {
 
@@ -26,8 +23,7 @@ function Login() {
 
   const [loading, setLoading] = useState(false)
 
-  const [showPassword, setShowPassword] =
-    useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   const [formData, setFormData] = useState({
     email: "",
@@ -36,7 +32,6 @@ function Login() {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-
     setFormData({
       ...formData,
       [name]: value,
@@ -44,41 +39,28 @@ function Login() {
   }
 
   const validateForm = () => {
-
-    const email =
-      formData.email.trim()
-
-    const password =
-      formData.password
+    const email = formData.email.trim()
+    const password = formData.password
 
     if (!email) {
-      toast.error(
-        "Email is required"
-      )
+      toast.error("Email is required")
       return false
     }
 
-    const emailRegex =
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
     if (!emailRegex.test(email)) {
-      toast.error(
-        "Please enter a valid email address"
-      )
+      toast.error("Please enter a valid email address")
       return false
     }
 
     if (!password) {
-      toast.error(
-        "Password is required"
-      )
+      toast.error("Password is required")
       return false
     }
 
     if (password.length < 8) {
-      toast.error(
-        "Password must be at least 8 characters"
-      )
+      toast.error("Password must be at least 8 characters")
       return false
     }
 
@@ -86,7 +68,6 @@ function Login() {
   }
 
   const handleSubmit = async (e) => {
-
     e.preventDefault()
 
     if (!validateForm()) {
@@ -94,7 +75,6 @@ function Login() {
     }
 
     try {
-      
       setLoading(true)
 
       const res = await axios.post(
@@ -105,204 +85,116 @@ function Login() {
         }
       )
 
-      toast.success(
-        `Welcome back ${res.data.user.username}!`
-      )
+      toast.success(`Welcome back ${res.data.user.username}!`)
 
-      localStorage.setItem(
-        "token",
-        res.data.token
-      )
+      localStorage.setItem("token", res.data.token)
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify(res.data.user)
-      )
+      localStorage.setItem("user", JSON.stringify(res.data.user))
 
       setTimeout(() => {
-
-        if (
-          res.data.user.role === "admin"
-        ) {
+        if (res.data.user.role === "admin") {
           navigate("/admin-dashboard")
         } else {
           navigate("/user-dashboard")
         }
-
       }, 1500)
 
     } catch (error) {
-
       toast.error(
-        error.response?.data?.message ||
-        "Login failed"
+        error.response?.data?.message || "Login failed"
       )
-
     } finally {
-
       setLoading(false)
-
     }
-
   }
-  
+
   const googleLogin = () => {
-
-    window.open(
-      `${API_URL}/auth/google`,
-      "_self"
-    )
-
+    window.open(`${API_URL}/auth/google`, "_self")
   }
 
   return (
-
-    <section className="login-page">
-
-      <div className="login-card">
-
-        <div className="login-left">
-
-          <h1>
-            Welcome Back
-          </h1>
-
-          <p>
-            Login to continue shopping
-            premium products, explore
-            trending collections,
-            manage your cart and
-            enjoy a seamless
-            ecommerce experience.
-          </p>
-
-        </div>
-
-        <div className="login-right">
-
-          <h2>
-            Login Account
-          </h2>
-
-          <form
-            onSubmit={handleSubmit}
-          >
-
-            <div className="input-group">
-
-              <FaEnvelope
-                className="input-icon"
-              />
-
-              <input
-                type="email"
-                placeholder="Email Address"
-                name="email"
-                value={
-                  formData.email
-                }
-                onChange={
-                  handleChange
-                }
-                autoComplete="email"
-              />
-
-            </div>
-
-            <div className="input-group">
-
-              <FaLock
-                className="input-icon"
-              />
-
-              <input
-                type={
-                  showPassword
-                    ? "text"
-                    : "password"
-                }
-                placeholder="Password"
-                name="password"
-                value={
-                  formData.password
-                }
-                onChange={
-                  handleChange
-                }
-                autoComplete="current-password"
-              />
-
-              <span
-                className="eye-icon"
-                onClick={() =>
-                  setShowPassword(
-                    !showPassword
-                  )
-                }
-              >
-                {
-                  showPassword
-                    ? <FaEyeSlash />
-                    : <FaEye />
-                }
-              </span>
-
-            </div>
-
-            {/* Forgot Password Link */}
-            <div className="forgot-password-container">
-              <Link to="/forgot-password" className="forgot-password-link">
-                Forgot Password?
-              </Link>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-            >
-              {
-                loading
-                  ? "Logging In..."
-                  : "Login"
-              }
-            </button>
-
-          </form>
-
-          <div className="divider">
-            <span>
-              OR
-            </span>
-          </div>
-
-          <button
-            className="google-btn"
-            onClick={
-              googleLogin
-            }
-          >
-            <FaGoogle />
-
-            Continue With Google
-          </button>
-
-          {/* Sign Up Link */}
-          <div className="signup-link-container">
+    <>
+      <section className="login-page">
+        <div className="login-card">
+          <div className="login-left">
+            <h1>Welcome Back</h1>
             <p>
-              Don't have an account?{" "}
-              <Link to="/signup" className="signup-link">
-                <FaUserPlus className="signup-icon" />
-                Sign Up
-              </Link>
+              Login to continue shopping
+              premium products, explore
+              trending collections,
+              manage your cart and
+              enjoy a seamless
+              ecommerce experience.
             </p>
           </div>
 
+          <div className="login-right">
+            <h2>Login Account</h2>
+
+            <form onSubmit={handleSubmit}>
+              <div className="input-group">
+                <FaEnvelope className="input-icon" />
+                <input
+                  type="email"
+                  placeholder="Email Address"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  autoComplete="email"
+                />
+              </div>
+
+              <div className="input-group">
+                <FaLock className="input-icon" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  autoComplete="current-password"
+                />
+                <span
+                  className="eye-icon"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </span>
+              </div>
+
+              <div className="forgot-password-container">
+                <Link to="/forgot-password" className="forgot-password-link">
+                  Forgot Password?
+                </Link>
+              </div>
+
+              <button type="submit" disabled={loading}>
+                {loading ? "Logging In..." : "Login"}
+              </button>
+            </form>
+
+            <div className="divider">
+              <span>OR</span>
+            </div>
+
+            <button className="google-btn" onClick={googleLogin}>
+              <FaGoogle />
+              Continue With Google
+            </button>
+
+            <div className="signup-link-container">
+              <p>
+                Don't have an account?{" "}
+                <Link to="/signup" className="signup-link">
+                  <FaUserPlus className="signup-icon" />
+                  Sign Up
+                </Link>
+              </p>
+            </div>
+          </div>
         </div>
-
-      </div>
-
-    </section>
-
+      </section>
+    </>
   )
 }
 

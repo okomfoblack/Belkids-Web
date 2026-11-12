@@ -1,5 +1,8 @@
+// Pages/BookPage.jsx
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Navbar from "../components/Navbar";
+import Header from "../components/Header";
 import {
   FaBirthdayCake,
   FaCheck,
@@ -16,17 +19,25 @@ import {
   FaMusic,
   FaUtensils,
   FaCamera,
-  FaUserTie
+  FaUserTie,
+  FaCreditCard
 } from "react-icons/fa";
 import "./Styles/BookPage.css";
+import Footer from "../components/Footer";
+
+// ✅ LOCAL BACKEND
+const API_URL = "http://localhost:5000";
 
 function BookPage() {
   const [openFaq, setOpenFaq] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const fullPackage = {
     id: "full",
     name: "Full Birthday Package",
     price: "GH₵10,000",
+    amount: 10000,
     priceNote: "private booking",
     includes: [
       "Exclusive private booking of the whole venue (except customers that pay entre fee)",
@@ -37,9 +48,7 @@ function BookPage() {
       "Bring your own DJ or music",
       "Dedicated event coordinator",
     ],
-    notIncluded: [
-      "No alcohol allowed — strictly enforced"
-    ]
+    notIncluded: ["No alcohol allowed — strictly enforced"]
   };
 
   const features = [
@@ -53,30 +62,99 @@ function BookPage() {
   ];
 
   const faqs = [
-    {
-      q: "What does the Full Birthday Package include?",
-      a: "The Full Birthday Package gives you exclusive private use of the entire venue, unlimited playground access for all guests, freedom to bring your own decorations, food, drinks (no alcohol), cake, and DJ, plus a dedicated event coordinator."
-    },
-    {
-      q: "Can I bring my own food and drinks?",
-      a: "Yes! With the Full Birthday Package you can bring your own food and drinks — but alcohol is strictly not allowed."
-    },
-    {
-      q: "Is alcohol allowed?",
-      a: "No. Alcohol is strictly not allowed — no exceptions."
-    },
-    {
-      q: "How far in advance should I book?",
-      a: "We recommend booking at least 2 weeks in advance to secure your preferred date."
-    },
-    {
-      q: "How many guests can I invite?",
-      a: "The Full Birthday Package gives you unlimited playground access for all your guests — invite as many as you like!"
-    }
+    { q: "What does the Full Birthday Package include?", a: "The Full Birthday Package gives you exclusive private use of the entire venue, unlimited playground access for all guests, freedom to bring your own decorations, food, drinks (no alcohol), cake, and DJ, plus a dedicated event coordinator." },
+    { q: "Can I bring my own food and drinks?", a: "Yes! With the Full Birthday Package you can bring your own food and drinks — but alcohol is strictly not allowed." },
+    { q: "Is alcohol allowed?", a: "No. Alcohol is strictly not allowed — no exceptions." },
+    { q: "How far in advance should I book?", a: "We recommend booking at least 2 weeks in advance to secure your preferred date." },
+    { q: "How many guests can I invite?", a: "The Full Birthday Package gives you unlimited playground access for all your guests — invite as many as you like!" }
   ];
 
+  // ✅ Pull the logged-in user from localStorage (adjust key if yours differs)
+  const getCurrentUser = () => {
+    try {
+      const raw = localStorage.getItem("user");
+      if (raw) return JSON.parse(raw);
+
+      // Fallbacks — some apps store these separately
+      const email = localStorage.getItem("email");
+      const token = localStorage.getItem("token");
+      if (email || token) return { email };
+
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
+  // ===== PAYSTACK PAYMENT HANDLER =====
+  // In BookPage.jsx — replace handlePaystackPayment with this:
+
+const handlePaystackPayment = async () => {
+  setError("");
+
+  const user = getCurrentUser();
+  const email = user?.email;
+
+  if (!email) {
+    setError("Please log in first — we need your email to send the receipt.");
+    return;
+  }
+
+  setLoading(true);
+  try {
+    const token = localStorage.getItem("token");
+
+    // 1. Initialize payment on Paystack
+    const res = await fetch(`${API_URL}/api/payments/initialize`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {})
+      },
+      body: JSON.stringify({
+        email,
+        amount: fullPackage.amount,
+        packageName: fullPackage.name
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || "Payment initialization failed");
+    }
+
+    // 2. Pre-create the booking record (pending until webhook confirms)
+    try {
+      await fetch(`${API_URL}/api/bookings`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({
+          packageName: fullPackage.name,
+          amount: fullPackage.amount,
+          paymentReference: data.reference
+        })
+      });
+    } catch (bookingErr) {
+      console.warn("Booking pre-create failed:", bookingErr);
+    }
+
+    // 3. Redirect to Paystack
+    window.location.href = data.authorization_url;
+  } catch (err) {
+    console.error("Payment init failed:", err);
+    setError(err.message || "Something went wrong. Please try again.");
+    setLoading(false);
+  }
+};
+
   return (
-    <div className="book-page">
+    <>
+      <Header />
+      <Navbar />
+      <div className="book-page">
 
       {/* HERO */}
       <section className="book-hero">
@@ -98,7 +176,7 @@ function BookPage() {
         </motion.div>
       </section>
 
-      {/* PACKAGE — Rectangular centered card */}
+      {/* PACKAGE */}
       <section className="book-packages">
         <div className="book-packages-inner">
           <div className="book-section-header">
@@ -149,17 +227,30 @@ function BookPage() {
                   </ul>
                 </div>
 
-                {/* ===== CONTACT TO BOOK ===== */}
-                <a href="tel:+233244701007" className="package-btn package-btn-primary">
-                  <FaPhoneAlt /> Call to Book This Package
+                {/* ===== PAYSTACK PAYMENT (no email field) ===== */}
+                <div className="package-payment">
+                  {error && <p className="package-payment-error">{error}</p>}
+
+                  <button
+                    type="button"
+                    onClick={handlePaystackPayment}
+                    disabled={loading}
+                    className="package-btn package-btn-primary package-btn-pay"
+                  >
+                    <FaCreditCard />
+                    {loading ? "Redirecting to Paystack…" : `Pay ${fullPackage.price} with Paystack`}
+                  </button>
+                </div>
+
+                <a href="tel:+233244701007" className="package-btn package-btn-outline">
+                  <FaPhoneAlt /> Or Call to Book
                 </a>
               </div>
             </motion.div>
           </div>
 
-          {/* Contact alternative */}
           <div className="payment-contact-alt">
-            <p>Ready to book? Reach out to us directly:</p>
+            <p>Prefer to talk first? Reach out to us directly:</p>
             <div className="payment-contact-buttons">
               <a href="tel:+233244701007" className="payment-contact-btn">
                 <FaPhoneAlt /> Call: +233 244 701 007
@@ -195,9 +286,7 @@ function BookPage() {
                 transition={{ delay: i * 0.08, duration: 0.5 }}
                 viewport={{ once: true }}
               >
-                <div className="feature-icon">
-                  <feature.icon />
-                </div>
+                <div className="feature-icon"><feature.icon /></div>
                 <span>{feature.text}</span>
               </motion.div>
             ))}
@@ -257,9 +346,7 @@ function BookPage() {
                   <span>{faq.q}</span>
                   <FaChevronDown className="book-faq-arrow" />
                 </button>
-                <div className="book-faq-answer">
-                  <p>{faq.a}</p>
-                </div>
+                <div className="book-faq-answer"><p>{faq.a}</p></div>
               </div>
             ))}
           </div>
@@ -286,7 +373,9 @@ function BookPage() {
         </div>
       </section>
 
+      <Footer />
     </div>
+    </>
   );
 }
 

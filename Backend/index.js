@@ -1,129 +1,138 @@
-// server.js
-// ✅ MUST BE THE VERY FIRST THING
-import dotenv from 'dotenv';
+// index.js
+import dotenv from "dotenv";
 dotenv.config();
 
-// ✅ Debug - Check if .env loaded
-console.log('🔍 Environment Variables:');
-console.log('  EMAIL_USER:', process.env.EMAIL_USER || '❌ NOT SET');
-console.log('  EMAIL_PASSWORD:', process.env.EMAIL_PASSWORD ? '✅ SET' : '❌ NOT SET');
-console.log('  EMAIL_SERVICE:', process.env.EMAIL_SERVICE || '❌ NOT SET');
-console.log('  PORT:', process.env.PORT || '❌ NOT SET');
-console.log('  JWT_SECRET:', process.env.JWT_SECRET ? '✅ SET' : '❌ NOT SET');
-console.log('  MONGO_URI:', process.env.MONGO_URI ? '✅ SET' : '❌ NOT SET');
-console.log('  FRONTEND_URL:', process.env.FRONTEND_URL || '❌ NOT SET');
+console.log("\n🔍 Environment:");
+console.log("  MONGO_URI:", process.env.MONGO_URI ? "✅" : "❌");
+console.log("  JWT_SECRET:", process.env.JWT_SECRET ? "✅" : "❌");
+console.log("  FRONTEND_URL:", process.env.FRONTEND_URL || "❌");
 
-// ✅ THEN import everything else
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import path from "path";
-import { fileURLToPath } from "url";
 import fs from "fs";
+import crypto from "crypto";
+import { fileURLToPath } from "url";
 
 import authRoutes from "./routes/authRoutes.js";
 import uploadRoutes from "./routes/upload.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
+import bookingRoutes from "./routes/bookingRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import Payment from "./models/Payment.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// Middleware
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-app.use(cors());
+// WEBHOOK (must be before express.json)
+app.post(
+  "/api/payments/webhook",
+  express.raw({ type: "application/json" }),
+  async (req, res) => {
+    try {
+      const hash = crypto
+        .createHmac("sha512", process.env.PAYSTACK_SECRET_KEY)
+        .update(req.body)
+        .digest("hex");
+      if (hash !== req.headers["x-paystack-signature"]) return res.sendStatus(401);
 
-// Ensure upload directories exist
-const uploadDirs = [
-  path.join(__dirname, "uploads"),
-  path.join(__dirname, "uploads/profiles")
-];
-
-uploadDirs.forEach(dir => {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-    console.log(`Created directory: ${dir}`);
+      const event = JSON.parse(req.body.toString());
+      if (event.event === "charge.success") {
+        await Payment.findOneAndUpdate(
+          { reference: event.data.reference },
+          { status: "success", paystackData: event.data }
+        );
+        console.log("✅ Webhook payment:", event.data.reference);
+      }
+      return res.sendStatus(200);
+    } catch (err) {
+      console.error("Webhook error:", err.message);
+      return res.sendStatus(500);
+    }
   }
-});
+);
 
+// Middleware
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+const origins = [
+  process.env.FRONTEND_URL,
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "http://127.0.0.1:5173",
+].filter(Boolean);
+
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      if (!origin || origins.includes(origin)) return cb(null, true);
+      console.warn("⚠️ CORS blocked:", origin);
+      cb(new Error(`Origin ${origin} not allowed`));
+    },
+    credentials: true,
+  })
+);
+
+// Uploads
+const uploadDir = path.join(__dirname, "uploads/profiles");
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// MongoDB Connection
+// DB
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("MongoDB Connected");
+    console.log("✅ MongoDB Connected");
+    console.log("📀 Database:", mongoose.connection.name);
   })
   .catch((err) => {
-    console.log("MongoDB Connection Error:", err);
+    console.error("❌ MongoDB Error:", err.message);
+    process.exit(1);
   });
 
-// Routes
+// Routes — mounted ONCE each
 app.use("/api/auth", authRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/payments", paymentRoutes);
+app.use("/api/bookings", bookingRoutes);
+app.use("/api/users", userRoutes);
 
-// Root route
-app.get("/", (req, res) => {
+console.log("\n🛣️  Routes mounted: auth, upload, payments, bookings, users\n");
+
+// Root
+app.get("/", (_req, res) => {
   res.json({
-    message: "ShopSphere API Running",
-    version: "1.0.0",
-    endpoints: {
-      auth: {
-        signup: "/api/auth/signup [POST]",
-        login: "/api/auth/login [POST]",
-        forgotPassword: "/api/auth/forgot-password [POST]",
-        resetPassword: "/api/auth/reset-password/:token [POST]",
-        verifyResetToken: "/api/auth/verify-reset-token/:token [GET]",
-      },
-      upload: "/api/upload [POST]"
-    }
+    message: "Belkids API Running",
+    routes: ["/api/auth", "/api/upload", "/api/payments", "/api/bookings", "/api/users"],
   });
 });
 
-// Test endpoint
-app.get("/api/test", (req, res) => {
-  res.json({ 
-    success: true, 
-    message: "Backend is working!",
-    timestamp: new Date().toISOString()
-  });
+app.get("/api/test", (_req, res) => {
+  res.json({ success: true, message: "Backend working!", time: new Date() });
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error("Error:", err);
-  
-  if (err.code === 'LIMIT_FILE_SIZE') {
-    return res.status(400).json({
-      success: false,
-      message: "File too large. Maximum size is 5MB"
-    });
-  }
-  
-  res.status(500).json({
-    success: false,
-    message: err.message || "Internal Server Error"
-  });
+// Error handler
+app.use((err, _req, res, _next) => {
+  console.error("❌ Error:", err.message);
+  if (err.code === "LIMIT_FILE_SIZE")
+    return res.status(400).json({ success: false, message: "File too large (5MB max)" });
+  res.status(err.status || 500).json({ success: false, message: err.message || "Server Error" });
 });
 
-// 404 handler
+// 404
 app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: "Route not found"
-  });
+  res.status(404).json({ success: false, message: `Not found: ${req.method} ${req.originalUrl}` });
 });
 
+// Start
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Upload directory: ${path.join(__dirname, "uploads/profiles")}`);
-  console.log(`API endpoints:`);
-  console.log(`  POST /api/auth/signup - Create new account`);
-  console.log(`  POST /api/auth/login - Login user`);
-  console.log(`  POST /api/auth/forgot-password - Request password reset`);
-  console.log(`  POST /api/auth/reset-password/:token - Reset password`);
-  console.log(`  GET /api/auth/verify-reset-token/:token - Verify reset token`);
+  console.log("==================================================");
+  console.log(`🚀 Server: http://localhost:${PORT}/`);
+  console.log(`❤️  Test:   http://localhost:${PORT}/api/test`);
+  console.log("==================================================\n");
 });

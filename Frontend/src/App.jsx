@@ -1,7 +1,5 @@
 // src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Header from "./components/Header";
 import LandingPage from "./Pages/HomePage";
 import AboutPage from "./Pages/AboutPage";
 import LocationsPage from "./Pages/LocationPage";
@@ -20,8 +18,7 @@ import "react-toastify/dist/ReactToastify.css";
 function App() {
   return (
     <Router>
-      <Header />
-      <Navbar />
+      
       <ToastContainer
         position="top-right"
         autoClose={3000}
