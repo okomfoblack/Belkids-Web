@@ -8,6 +8,7 @@ import {
   FaEye,
   FaEyeSlash,
   FaCamera,
+  FaPhoneAlt,
 } from "react-icons/fa";
 import { toast } from "react-toastify";
 import "./Styles/Signup.css";
@@ -28,6 +29,7 @@ function Signup() {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
+    phone: "",
     password: "",
     confirmPassword: "",
   });
@@ -36,6 +38,12 @@ function Signup() {
     const { name, value } = e.target;
     if (name === "username") {
       setFormData({ ...formData, username: value.replace(/\s/g, "") });
+      return;
+    }
+    if (name === "phone") {
+      // Allow only digits, +, spaces, dashes, parentheses
+      const cleaned = value.replace(/[^\d+\-\s()]/g, "");
+      setFormData({ ...formData, phone: cleaned });
       return;
     }
     setFormData({ ...formData, [name]: value });
@@ -62,10 +70,33 @@ function Signup() {
     reader.readAsDataURL(file);
   };
 
+  /**
+   * Validates an international phone number.
+   * Rules:
+   *  - Optional leading "+"
+   *  - Digits only after stripping spaces/dashes/parentheses
+   *  - 7 to 15 digits (ITU E.164 allows up to 15, minimum realistic is 7)
+   *  - Cannot start with "0" when using "+" country code? No — we allow it
+   *    because some countries (e.g. Italy) keep leading zeros even in E.164.
+   *  - Rejects numbers that are all the same digit (e.g. 0000000, 1111111)
+   */
+  const isValidPhone = (raw) => {
+    if (!raw) return false;
+    const cleaned = raw.replace(/[\s\-()]/g, "");
+    if (!/^\+?\d{7,15}$/.test(cleaned)) return false;
+    const digits = cleaned.replace(/^\+/, "");
+    // Reject obvious fakes: all same digit
+    if (/^(\d)\1+$/.test(digits)) return false;
+    // Reject sequences like 1234567 or 0123456 (straight run)
+    if (/^0?1234567/.test(digits)) return false;
+    return true;
+  };
+
   const validateForm = () => {
-    const { username, email, password, confirmPassword } = formData;
+    const { username, email, phone, password, confirmPassword } = formData;
     if (!username.trim()) { toast.error("Username is required"); return false; }
     if (!email.trim()) { toast.error("Email is required"); return false; }
+    if (!phone.trim()) { toast.error("Phone number is required"); return false; }
     if (!password) { toast.error("Password is required"); return false; }
     if (!confirmPassword) { toast.error("Confirm Password is required"); return false; }
     if (username.length < 3) { toast.error("Username must be at least 3 characters"); return false; }
@@ -76,6 +107,10 @@ function Signup() {
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) { toast.error("Please enter a valid email"); return false; }
+    if (!isValidPhone(phone)) {
+      toast.error("Enter a valid international phone number (7–15 digits, optional +)");
+      return false;
+    }
     if (password.length < 8) { toast.error("Password must be at least 8 characters"); return false; }
     if (!/[A-Z]/.test(password)) { toast.error("Password must contain an uppercase letter"); return false; }
     if (!/[a-z]/.test(password)) { toast.error("Password must contain a lowercase letter"); return false; }
@@ -93,6 +128,7 @@ function Signup() {
       const res = await axios.post(`${API_URL}/api/auth/signup`, {
         username: formData.username.trim(),
         email: formData.email.trim(),
+        phone: formData.phone.trim(),
         password: formData.password,
         confirmPassword: formData.confirmPassword,
         profileImage: profileImage,
@@ -100,7 +136,7 @@ function Signup() {
       toast.success(res.data.message || "Account created successfully");
       if (res.data.token) localStorage.setItem("token", res.data.token);
       if (res.data.user) localStorage.setItem("user", JSON.stringify(res.data.user));
-      setFormData({ username: "", email: "", password: "", confirmPassword: "" });
+      setFormData({ username: "", email: "", phone: "", password: "", confirmPassword: "" });
       setProfileImage("");
       setImagePreview("");
       setTimeout(() => navigate("/login"), 1500);
@@ -112,7 +148,11 @@ function Signup() {
   };
 
   const isFormComplete =
-    formData.username && formData.email && formData.password && formData.confirmPassword;
+    formData.username &&
+    formData.email &&
+    formData.phone &&
+    formData.password &&
+    formData.confirmPassword;
 
   const getImageSource = () => {
     if (imagePreview) return imagePreview;
@@ -156,6 +196,18 @@ function Signup() {
             <div className="input-group">
               <FaEnvelope className="input-icon" />
               <input type="email" placeholder="Email Address" name="email" value={formData.email} onChange={handleChange} />
+            </div>
+
+            <div className="input-group">
+              <FaPhoneAlt className="input-icon" />
+              <input
+                type="tel"
+                placeholder="Phone Number (e.g. +233244701007)"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                inputMode="tel"
+              />
             </div>
 
             <div className="input-group">

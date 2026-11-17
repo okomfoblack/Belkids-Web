@@ -34,11 +34,11 @@
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 8px clamp(12px, 2vw, 28px);
+  padding: 6px clamp(12px, 2vw, 26px); /* Balanced padding */
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: clamp(10px, 2vw, 24px);
+  gap: clamp(10px, 2vw, 22px);
 }
 
 /* =========================
@@ -55,8 +55,8 @@
 
 .logo-img {
   display: block;
-  width: 96px;
-  height: 96px;
+  width: 84px;  /* Sweet spot between 72 and 96 */
+  height: 84px;
   object-fit: contain;
 }
 
@@ -87,14 +87,14 @@
 .header-socials {
   display: flex;
   align-items: center;
-  gap: 9px;
-  padding-right: 16px;
+  gap: 8px;
+  padding-right: 15px;
   border-right: 1px solid var(--header-border);
 }
 
 .social-icon {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: var(--primary-white-off);
   color: var(--text-medium);
@@ -102,7 +102,7 @@
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
 }
 .social-icon:hover {
@@ -122,12 +122,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  min-height: 36px;
-  padding: 8px 16px;
+  gap: 6px;
+  min-height: 34px;
+  padding: 7px 15px;
   border-radius: 50px;
   font-family: inherit;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 600;
   white-space: nowrap;
   text-decoration: none;
@@ -136,7 +136,7 @@
   transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
 }
 
-.header-btn .btn-icon { font-size: 0.82rem; }
+.header-btn .btn-icon { font-size: 0.8rem; }
 
 .header-btn-outline {
   background: transparent;
@@ -171,30 +171,29 @@
    RESPONSIVE
 ========================= */
 @media (max-width: 1024px) {
-  .header-container { padding: 7px 18px; gap: 12px; }
-  .logo-img { width: 80px; height: 80px; }
+  .header-container { padding: 6px 18px; gap: 12px; }
+  .logo-img { width: 74px; height: 74px; }
 }
 
 @media (max-width: 768px) {
-  .header-container { padding: 7px 14px; gap: 8px; }
+  .header-container { padding: 6px 14px; gap: 8px; }
   .logo-img { width: 60px; height: 60px; }
   .social-icon { width: 30px; height: 30px; font-size: 0.72rem; }
-  .header-btn { min-height: 34px; padding: 7px 12px; font-size: 0.74rem; }
+  .header-btn { min-height: 32px; padding: 6px 12px; font-size: 0.74rem; }
 }
 
-/* 🔑 On mobile, HIDE the header's socials + auth —
-   they now live inside the Navbar hamburger dropdown */
+/* 🔑 On mobile, HIDE the header's socials + auth */
 @media (max-width: 640px) {
   .header-container {
-    justify-content: center;   /* logo alone, centered */
-    padding: 8px 14px;
+    justify-content: center;
+    padding: 6px 14px;
   }
   .header-right { display: none; }
   .logo-img { width: 56px; height: 56px; }
 }
 
 @media (max-width: 480px) {
-  .logo-img { width: 50px; height: 50px; }
+  .logo-img { width: 52px; height: 52px; }
 }
 
 @media (max-width: 360px) {

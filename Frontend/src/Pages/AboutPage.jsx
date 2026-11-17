@@ -287,9 +287,7 @@ function About() {
           >
             <FaQuoteLeft className="about-quote-mark" />
             <p>
-              We built Belkids so that every child in Accra would have a place to
-              laugh, explore, and feel at home. It's a joy to see families grow
-              with us year after year.
+            At Belkids Playground, we teach kids how to swim and help them feel safe and confident as they explore the water. Our caring instructors use fun, gentle methods to turn fear into smiles, splashes, and skills that last a lifetime.
             </p>
             <span className="about-quote-name">MzBel</span>
             <span className="about-quote-role">Founder, Belkids Playground</span>

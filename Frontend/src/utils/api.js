@@ -1,5 +1,6 @@
 // src/utils/api.js
-const API_URL = "http://localhost:5000";
+// src/utils/api.js
+const API_URL = "https://belkids-backend.onrender.com";
 
 const getToken = () => localStorage.getItem("token");
 
@@ -24,24 +25,54 @@ const handle = async (res) => {
 };
 
 export const api = {
-  getMe: () => fetch(`${API_URL}/api/users/me`, { headers: headers() }).then(handle),
-  getMyPayments: () => fetch(`${API_URL}/api/payments/my-payments`, { headers: headers() }).then(handle),
-  getAllPayments: () => fetch(`${API_URL}/api/payments/all`, { headers: headers() }).then(handle),
+  getMe: () =>
+    fetch(`${API_URL}/api/users/me`, { headers: headers() }).then(handle),
+
+  getMyPayments: () =>
+    fetch(`${API_URL}/api/payments/my-payments`, { headers: headers() }).then(
+      handle
+    ),
+
+  getAllPayments: () =>
+    fetch(`${API_URL}/api/payments/all`, { headers: headers() }).then(handle),
+
+  initializePayment: (body) =>
+    fetch(`${API_URL}/api/payments/initialize`, {
+      method: "POST",
+      headers: headers(),
+      body: JSON.stringify(body)
+    }).then(handle),
+
   createBooking: (body) =>
     fetch(`${API_URL}/api/bookings`, {
       method: "POST",
       headers: headers(),
       body: JSON.stringify(body)
     }).then(handle),
-  getMyBookings: () => fetch(`${API_URL}/api/bookings/my`, { headers: headers() }).then(handle),
-  getAllBookings: () => fetch(`${API_URL}/api/bookings/all`, { headers: headers() }).then(handle),
+
+  checkAvailability: (date) =>
+    fetch(
+      `${API_URL}/api/bookings/check-availability?date=${encodeURIComponent(
+        date
+      )}`,
+      { headers: headers() }
+    ).then(handle),
+
+  getMyBookings: () =>
+    fetch(`${API_URL}/api/bookings/my`, { headers: headers() }).then(handle),
+
+  getAllBookings: () =>
+    fetch(`${API_URL}/api/bookings/all`, { headers: headers() }).then(handle),
+
   updateBookingStatus: (id, status) =>
     fetch(`${API_URL}/api/bookings/${id}/status`, {
       method: "PATCH",
       headers: headers(),
       body: JSON.stringify({ status })
     }).then(handle),
-  getAllUsers: () => fetch(`${API_URL}/api/users/all`, { headers: headers() }).then(handle)
+
+  getAllUsers: () =>
+    fetch(`${API_URL}/api/users/all`, { headers: headers() }).then(handle)
 };
 
 export default api;

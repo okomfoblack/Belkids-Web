@@ -1,15 +1,14 @@
 // controllers/paymentController.js
 import Payment from "../models/Payment.js";
+import Booking from "../models/Booking.js";
 import axios from "axios";
 
 const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET_KEY;
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
-// @desc    Initialize a transaction
-// @route   POST /api/payments/initialize
 export const initializePayment = async (req, res) => {
   try {
-    const { email, amount, packageName } = req.body;
+    const { email, amount, packageName, bookingId } = req.body;
 
     if (!email || !amount || !packageName) {
       return res.status(400).json({
@@ -27,6 +26,7 @@ export const initializePayment = async (req, res) => {
 
     const payment = await Payment.create({
       user: req.user?.id || null,
+      booking: bookingId || null,
       reference: `BK_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
       amount: Math.round(Number(amount) * 100),
       status: "pending",
@@ -74,8 +74,6 @@ export const initializePayment = async (req, res) => {
   }
 };
 
-// @desc    Verify a transaction
-// @route   GET /api/payments/verify/:reference
 export const verifyPayment = async (req, res) => {
   try {
     const { reference } = req.params;
@@ -102,6 +100,15 @@ export const verifyPayment = async (req, res) => {
       payment.status = "success";
       payment.paystackData = paystackData;
       await payment.save();
+
+      if (payment.booking) {
+        await Booking.findByIdAndUpdate(payment.booking, {
+          status: "confirmed",
+          paid: true,
+          paymentReference: reference
+        });
+      }
+
       return res.status(200).json({
         success: true,
         message: "Payment verified successfully"
@@ -123,8 +130,6 @@ export const verifyPayment = async (req, res) => {
   }
 };
 
-// @desc    Get all payments (Admin dashboard)
-// @route   GET /api/payments/all
 export const getAllPayments = async (_req, res) => {
   try {
     const payments = await Payment.find()
@@ -137,8 +142,6 @@ export const getAllPayments = async (_req, res) => {
   }
 };
 
-// @desc    Get current user's payments (User dashboard)
-// @route   GET /api/payments/my-payments
 export const getMyPayments = async (req, res) => {
   try {
     const payments = await Payment.find({ user: req.user?.id }).sort({
@@ -151,8 +154,6 @@ export const getMyPayments = async (req, res) => {
   }
 };
 
-// @desc    Paystack webhook — mark payment successful
-// @route   POST /api/payments/webhook
 export const paystackWebhook = async (req, res) => {
   try {
     const crypto = (await import("crypto")).default;
@@ -168,10 +169,21 @@ export const paystackWebhook = async (req, res) => {
     const event = JSON.parse(req.body.toString());
     if (event.event === "charge.success") {
       const { reference } = event.data;
-      await Payment.findOneAndUpdate(
+
+      const payment = await Payment.findOneAndUpdate(
         { reference },
-        { status: "success", paystackData: event.data }
+        { status: "success", paystackData: event.data },
+        { new: true }
       );
+
+      if (payment?.booking) {
+        await Booking.findByIdAndUpdate(payment.booking, {
+          status: "confirmed",
+          paid: true,
+          paymentReference: reference
+        });
+      }
+
       console.log("✅ Webhook: payment success →", reference);
     }
 

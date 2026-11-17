@@ -86,10 +86,9 @@ function UserDashboard() {
   );
 
   const stats = [
-    { icon: FaBirthdayCake, value: bookings.length, label: "Total Bookings", color: "#E91E63" },
-    { icon: FaCalendarCheck, value: upcoming.length, label: "Upcoming Events", color: "#2E7D32" },
-    { icon: FaUtensils, value: payments.filter((p) => p.status === "success").length, label: "Paid Orders", color: "#F57C00" },
-    { icon: FaStar, value: `GH₵${totalSpent.toLocaleString()}`, label: "Total Spent", color: "#5D4037" }
+    { icon: FaBirthdayCake, value: bookings.length, label: "Your Total Bookings", color: "#E91E63" },
+    { icon: FaCalendarCheck, value: upcoming.length, label: "Your Upcoming Events", color: "#2E7D32" },
+    { icon: FaStar, value: `GH₵${totalSpent.toLocaleString()}`, label: "Your Total Spent", color: "#5D4037" }
   ];
 
   const quickActions = [

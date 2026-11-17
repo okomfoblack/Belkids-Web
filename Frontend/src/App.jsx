@@ -1,6 +1,6 @@
 // src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LandingPage from "./Pages/HomePage";
+import HomePage from "./Pages/HomePage"; // <-- Renamed here to avoid confusion
 import AboutPage from "./Pages/AboutPage";
 import LocationsPage from "./Pages/LocationPage";
 import ContactPage from "./Pages/ContactPage";
@@ -18,7 +18,6 @@ import "react-toastify/dist/ReactToastify.css";
 function App() {
   return (
     <Router>
-      
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -32,7 +31,7 @@ function App() {
         theme="dark"
       />
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<HomePage />} /> {/* <-- Changed here too */}
         <Route path="/about" element={<AboutPage />} />
         <Route path="/locations" element={<LocationsPage />} />
         <Route path="/gallery" element={<GalleryPage />} />

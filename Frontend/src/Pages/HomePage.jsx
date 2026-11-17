@@ -1,4 +1,5 @@
-// Pages/
+// Pages/HomePage.jsx
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
@@ -28,8 +29,26 @@ import "./Styles/HomePage.css";
 import heroImg from "../assets/Belkids-Images/banner3.jpeg";
 import celebrateImg from "../assets/Belkids-Images/next.jpeg";
 import Footer from "../components/Footer";
+import IntroAnimation from "../components/IntroAnimation"; // <-- IMPORT ADDED
 
 function HomePage() {
+  // <-- INTRO ANIMATION STATE ADDED
+  const [showIntro, setShowIntro] = useState(false);
+
+  useEffect(() => {
+    // Check if the intro has already played in this session
+    const hasPlayed = sessionStorage.getItem("belkidsIntroPlayed");
+    if (!hasPlayed) {
+      setShowIntro(true);
+    }
+  }, []);
+
+  const handleIntroComplete = () => {
+    // Save to session storage so it doesn't play again until they close the browser
+    sessionStorage.setItem("belkidsIntroPlayed", "true");
+    setShowIntro(false);
+  };
+
   const promises = [
     { icon: FaShieldAlt, title: "Safety", text: "Secure supervised play zones and family-friendly facilities." },
     { icon: FaHandsWash, title: "Hygiene", text: "Immaculate facilities with strict cleaning protocols." },
@@ -49,6 +68,9 @@ function HomePage() {
 
   return (
     <>
+      {/* <-- INTRO ANIMATION COMPONENT ADDED --> */}
+      {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
+
       <Header />
       <Navbar />
       <div className="home-page">

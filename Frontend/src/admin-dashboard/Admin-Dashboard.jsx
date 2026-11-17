@@ -1,5 +1,5 @@
 // AdminDashboard.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
@@ -19,7 +19,12 @@ import {
   FaCheck,
   FaArrowUp,
   FaPhoneAlt,
-  FaSync
+  FaSync,
+  FaSearch,
+  FaUser,
+  FaEnvelope,
+  FaCalendarCheck,
+  FaTimesCircle
 } from "react-icons/fa";
 import "./Styles/AdminDashboard.css";
 
@@ -41,6 +46,10 @@ function AdminDashboard() {
   const [bookings, setBookings] = useState([]);
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Users section state
+  const [userSearch, setUserSearch] = useState("");
+  const [selectedUser, setSelectedUser] = useState(null);
 
   // Auth guard
   useEffect(() => {
@@ -109,6 +118,49 @@ function AdminDashboard() {
         })
       : "—";
 
+  const formatDateTime = (d) =>
+    d
+      ? new Date(d).toLocaleString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        })
+      : "—";
+
+  // Safe string conversion helper
+  const toLower = (val) => (val == null ? "" : String(val).toLowerCase());
+
+  // Filter users by search (username, name, email, phone, etc.)
+  const filteredUsers = useMemo(() => {
+    const q = userSearch.trim().toLowerCase();
+    if (!q) return users;
+
+    return users.filter((u) => {
+      const fields = [
+        u.username,
+        u.name,
+        u.fullName,
+        u.email,
+        u.phone,
+        u.phoneNumber,
+        u.mobile,
+        u.contact
+      ];
+      return fields.some((field) => toLower(field).includes(q));
+    });
+  }, [users, userSearch]);
+
+  // Get bookings belonging to a specific user
+  const getUserBookings = (u) =>
+    bookings.filter(
+      (b) =>
+        b.user?._id === u._id ||
+        b.user === u._id ||
+        b.email === u.email
+    );
+
   if (!user) return null;
 
   const totalRevenue = payments
@@ -129,7 +181,6 @@ function AdminDashboard() {
 
   return (
     <>
-    
       <div className="admin-dashboard">
         <button
           className="admin-mobile-toggle"
@@ -271,7 +322,7 @@ function AdminDashboard() {
                             <tbody>
                               {bookings.slice(0, 4).map((b) => (
                                 <tr key={b._id}>
-                                  <td>{b.user?.username || "—"}</td>
+                                  <td>{b.user?.username || b.user?.name || "—"}</td>
                                   <td>{formatDate(b.createdAt)}</td>
                                   <td>
                                     <span
@@ -362,46 +413,88 @@ function AdminDashboard() {
                       <span className="admin-tag">User Management</span>
                       <h1>Registered Users</h1>
                       <p>
-                        Manage and view all families registered at Belkids.
+                        Search, view and manage all families registered at
+                        Belkids.
                       </p>
                     </div>
                   </div>
 
                   <div className="admin-panel">
+                    {/* SEARCH BAR */}
+                    <div className="admin-search-wrap">
+                      <FaSearch className="admin-search-icon" />
+                      <input
+                        type="text"
+                        className="admin-search-input"
+                        placeholder="Search by name, email or phone…"
+                        value={userSearch}
+                        onChange={(e) => setUserSearch(e.target.value)}
+                      />
+                      {userSearch && (
+                        <button
+                          className="admin-search-clear"
+                          onClick={() => setUserSearch("")}
+                          title="Clear search"
+                        >
+                          <FaTimesCircle />
+                        </button>
+                      )}
+                    </div>
+
                     <div className="admin-table-wrap">
                       {loading ? (
                         <p className="empty-msg">Loading…</p>
                       ) : users.length === 0 ? (
                         <p className="empty-msg">No users yet.</p>
+                      ) : filteredUsers.length === 0 ? (
+                        <p className="empty-msg">
+                          No users match "{userSearch}".
+                        </p>
                       ) : (
                         <table className="admin-table">
                           <thead>
                             <tr>
                               <th>Username</th>
                               <th>Email</th>
+                              <th>Phone</th>
                               <th>Role</th>
                               <th>Joined</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {users.map((u) => (
-                              <tr key={u._id}>
+                            {filteredUsers.map((u) => (
+                              <tr
+                                key={u._id}
+                                className="admin-clickable-row"
+                                onClick={() => setSelectedUser(u)}
+                                title="View user details"
+                              >
                                 <td>
                                   <div className="admin-user-cell">
                                     <img
                                       src={
                                         u.profileImage ||
-                                        `https://ui-avatars.com/api/?name=${u.username}&background=2E7D32&color=fff&size=40`
+                                        `https://ui-avatars.com/api/?name=${
+                                          u.username || u.name || "User"
+                                        }&background=2E7D32&color=fff&size=40`
                                       }
-                                      alt={u.username}
+                                      alt={u.username || u.name || "User"}
                                     />
-                                    <span>{u.username}</span>
+                                    <span>
+                                      {u.username || u.name || "—"}
+                                    </span>
                                   </div>
                                 </td>
-                                <td>{u.email}</td>
+                                <td>{u.email || "—"}</td>
+                                <td>
+                                  {u.phone ||
+                                    u.phoneNumber ||
+                                    u.mobile ||
+                                    "—"}
+                                </td>
                                 <td>
                                   <span className="admin-status ok">
-                                    {u.role}
+                                    {u.role || "user"}
                                   </span>
                                 </td>
                                 <td>{formatDate(u.createdAt)}</td>
@@ -453,7 +546,7 @@ function AdminDashboard() {
                           <tbody>
                             {bookings.map((b) => (
                               <tr key={b._id}>
-                                <td>{b.user?.username || "—"}</td>
+                                <td>{b.user?.username || b.user?.name || "—"}</td>
                                 <td>{b.packageName}</td>
                                 <td>GH₵{b.amount.toLocaleString()}</td>
                                 <td>{formatDate(b.createdAt)}</td>
@@ -549,7 +642,7 @@ function AdminDashboard() {
                                 >
                                   {p.reference}
                                 </td>
-                                <td>{p.user?.username || "guest"}</td>
+                                <td>{p.user?.username || p.user?.name || "guest"}</td>
                                 <td>{p.packageName}</td>
                                 <td>
                                   GH₵{(p.amount / 100).toLocaleString()}
@@ -629,6 +722,153 @@ function AdminDashboard() {
           </main>
         </div>
       </div>
+
+      {/* USER DETAIL MODAL */}
+      <AnimatePresence>
+        {selectedUser && (
+          <motion.div
+            className="admin-modal-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedUser(null)}
+          >
+            <motion.div
+              className="admin-modal"
+              initial={{ opacity: 0, scale: 0.92, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 20 }}
+              transition={{ duration: 0.25 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                className="admin-modal-close"
+                onClick={() => setSelectedUser(null)}
+                title="Close"
+              >
+                <FaTimes />
+              </button>
+
+              <div className="admin-modal-header">
+                <img
+                  src={
+                    selectedUser.profileImage ||
+                    `https://ui-avatars.com/api/?name=${
+                      selectedUser.username || selectedUser.name || "User"
+                    }&background=2E7D32&color=fff&size=96`
+                  }
+                  alt={selectedUser.username || selectedUser.name || "User"}
+                  className="admin-modal-avatar"
+                />
+                <div>
+                  <h2>
+                    {selectedUser.username || selectedUser.name || "—"}
+                  </h2>
+                  <span className="admin-role-badge">
+                    {selectedUser.role || "user"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="admin-modal-body">
+                <h3 className="admin-modal-section-title">
+                  <FaUser /> Account Details
+                </h3>
+
+                <div className="admin-detail-row">
+                  <FaUser className="admin-detail-icon" />
+                  <div>
+                    <span>Username</span>
+                    <strong>
+                      {selectedUser.username || selectedUser.name || "—"}
+                    </strong>
+                  </div>
+                </div>
+
+                {(selectedUser.fullName || selectedUser.name) && (
+                  <div className="admin-detail-row">
+                    <FaUser className="admin-detail-icon" />
+                    <div>
+                      <span>Full Name</span>
+                      <strong>
+                        {selectedUser.fullName || selectedUser.name}
+                      </strong>
+                    </div>
+                  </div>
+                )}
+
+                <div className="admin-detail-row">
+                  <FaEnvelope className="admin-detail-icon" />
+                  <div>
+                    <span>Email</span>
+                    <strong>{selectedUser.email || "—"}</strong>
+                  </div>
+                </div>
+
+                <div className="admin-detail-row">
+                  <FaPhoneAlt className="admin-detail-icon" />
+                  <div>
+                    <span>Phone</span>
+                    <strong>
+                      {selectedUser.phone ||
+                        selectedUser.phoneNumber ||
+                        selectedUser.mobile ||
+                        "Not provided"}
+                    </strong>
+                  </div>
+                </div>
+
+                <div className="admin-detail-row">
+                  <FaCalendarCheck className="admin-detail-icon" />
+                  <div>
+                    <span>Joined</span>
+                    <strong>
+                      {formatDateTime(selectedUser.createdAt)}
+                    </strong>
+                  </div>
+                </div>
+
+                <h3 className="admin-modal-section-title">
+                  <FaBirthdayCake /> Bookings
+                </h3>
+
+                {(() => {
+                  const userBookings = getUserBookings(selectedUser);
+                  if (userBookings.length === 0) {
+                    return (
+                      <p className="admin-modal-empty">
+                        No bookings made by this user yet.
+                      </p>
+                    );
+                  }
+                  return (
+                    <ul className="admin-modal-list">
+                      {userBookings.map((b) => (
+                        <li key={b._id}>
+                          <div>
+                            <strong>{b.packageName}</strong>
+                            <span>
+                              {formatDate(b.eventDate || b.createdAt)} • GH₵
+                              {b.amount.toLocaleString()}
+                            </span>
+                          </div>
+                          <span
+                            className={`admin-status ${
+                              b.status === "confirmed" ? "ok" : "pending"
+                            }`}
+                          >
+                            {b.status}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  );
+                })()}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

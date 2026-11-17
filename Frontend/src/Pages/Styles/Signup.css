@@ -734,3 +734,63 @@ button[type="submit"]:disabled {
         transform: none !important;
     }
 }
+
+/* ===== PHONE INPUT HINT ===== */
+.input-group input[type="tel"] {
+    letter-spacing: 0.5px;
+}
+
+/* Optional: subtle hint text under the phone field */
+.phone-hint {
+    color: #A0AEC0;
+    font-size: 0.72rem;
+    margin-top: -12px;
+    margin-left: 4px;
+}
+
+@media (max-width: 600px) {
+    .phone-hint {
+        font-size: 0.68rem;
+    }
+}
+
+/* ===== FORCE BLACK TEXT IN ALL INPUTS ===== */
+.signup-page input,
+.signup-page input[type="text"],
+.signup-page input[type="email"],
+.signup-page input[type="tel"],
+.signup-page input[type="password"] {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+    caret-color: #000000 !important;
+}
+
+/* Keep black text when focused */
+.signup-page input:focus {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+}
+
+/* Kill Chrome/Safari autofill white/yellow background */
+.signup-page input:-webkit-autofill,
+.signup-page input:-webkit-autofill:hover,
+.signup-page input:-webkit-autofill:focus,
+.signup-page input:-webkit-autofill:active {
+    -webkit-text-fill-color: #000000 !important;
+    color: #000000 !important;
+    -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+    box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+    transition: background-color 9999s ease-in-out 0s;
+}
+
+/* Placeholder stays gray so it's clearly a hint, not typed text */
+.signup-page input::placeholder {
+    color: #A0AEC0 !important;
+    -webkit-text-fill-color: #A0AEC0 !important;
+    opacity: 1;
+}
+
+/* Phone field letter spacing for readability */
+.input-group input[type="tel"] {
+    letter-spacing: 0.5px;
+}
