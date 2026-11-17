@@ -6,7 +6,7 @@ import logoImg from "../assets/Belkids-Images/image7.png";
 
 export default function IntroAnimation({ onComplete }) {
   const [isVisible, setIsVisible] = useState(true);
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(0); 
 
   useEffect(() => {
     // Progress bar: fills over exactly 2 seconds (20ms * 50 increments of 2%)
