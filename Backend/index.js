@@ -21,6 +21,7 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import Payment from "./models/Payment.js";
+import Booking from "./models/Booking.js"; // ✅ Imported Booking model
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -41,11 +42,25 @@ app.post(
 
       const event = JSON.parse(req.body.toString());
       if (event.event === "charge.success") {
-        await Payment.findOneAndUpdate(
-          { reference: event.data.reference },
-          { status: "success", paystackData: event.data }
+        const reference = event.data.reference;
+
+        // 1. Mark the payment as success
+        const payment = await Payment.findOneAndUpdate(
+          { reference },
+          { status: "success", paystackData: event.data },
+          { new: true }
         );
-        console.log("✅ Webhook payment:", event.data.reference);
+
+        // 2. Mark the linked booking as confirmed
+        if (payment?.booking) {
+          await Booking.findByIdAndUpdate(payment.booking, {
+            status: "confirmed",
+            paid: true,
+            paymentReference: reference
+          });
+        }
+
+        console.log("✅ Webhook payment confirmed:", reference);
       }
       return res.sendStatus(200);
     } catch (err) {
